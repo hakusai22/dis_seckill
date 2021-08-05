@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * 消息队列服务
- *
  * @author xizizzz
  */
 

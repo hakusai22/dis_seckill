@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 @Slf4j
 public class LogAspect {
 
-
     @Pointcut("@annotation(com.seckill.dis.gateway.aop_log.LogAnnotation)")
     public void logPointCut() {
     }
@@ -45,6 +44,7 @@ public class LogAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         LogAnnotation logAnnotation = method.getAnnotation(LogAnnotation.class);
+        System.out.println();
         log.info("=====================log start================================");
         log.info("module:{}", logAnnotation.module());
         log.info("operation:{}", logAnnotation.operation());
@@ -54,10 +54,13 @@ public class LogAspect {
         String methodName = signature.getName();
         log.info("request method:{}", className + "." + methodName + "()");
 
-//        //请求的参数
+//      //请求的参数
         Object[] args = joinPoint.getArgs();
-        String params = JSON.toJSONString(args[0]);
-        log.info("params:{}", params);
+
+        if(args!=null&&args.length>0){
+//            String params = JSON.toJSONString(args[0]);
+//            log.info("params:{}", params);
+        }
 
         //获取request 设置IP地址
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
@@ -66,5 +69,6 @@ public class LogAspect {
 
         log.info("excute time : {} ms", time);
         log.info("=====================log end================================");
+        System.out.println();
     }
 }

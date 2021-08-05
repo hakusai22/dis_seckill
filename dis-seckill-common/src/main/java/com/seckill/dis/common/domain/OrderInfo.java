@@ -21,7 +21,7 @@ import java.util.Date;
 public class OrderInfo implements Serializable{
 
     // FastJson
-    @JSONField(serializeUsing = com.alibaba.fastjson.serializer.ToStringSerializer.class)
+//    @JSONField(serializeUsing = com.alibaba.fastjson.serializer.ToStringSerializer.class)
     private Long id;
     private Long userId;
     private Long goodsId;

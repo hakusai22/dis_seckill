@@ -22,7 +22,6 @@ public class MqProviderImpl implements MqProviderApi, RabbitTemplate.ConfirmCall
 
     private static Logger logger = LoggerFactory.getLogger(MqProviderImpl.class);
 
-    @Autowired
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
@@ -34,15 +33,15 @@ public class MqProviderImpl implements MqProviderApi, RabbitTemplate.ConfirmCall
 
     @Override
     public void sendSkMessage(SkMessage message) {
-        logger.info("发送消息的内容：{}", message);
+        logger.info("MQ send message: " + message);
         // 秒杀消息关联的数据
         CorrelationData skCorrData = new CorrelationData(UUID.randomUUID().toString());
         // 第一个参数为消息队列名(此处也为routingKey)，第二个参数为发送的消息
-        rabbitTemplate.convertAndSend(MQConfig.SECKILL_EXCHANGE,MQConfig.SECKILL_QUEUE_A, message, skCorrData);
+        rabbitTemplate.convertAndSend(MQConfig.SECKILL_QUEUE, message, skCorrData);
     }
 
     /**
-     * MQ ack confirm机制
+     * MQ ack 机制
      * TODO 完善验证机制，确保消息能够被消费，且不影响消息吞吐量
      */
     @Override
