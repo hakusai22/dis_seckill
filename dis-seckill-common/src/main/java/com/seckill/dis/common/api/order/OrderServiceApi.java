@@ -4,6 +4,7 @@ import com.seckill.dis.common.api.goods.vo.GoodsVo;
 import com.seckill.dis.common.api.user.vo.UserVo;
 import com.seckill.dis.common.domain.OrderInfo;
 import com.seckill.dis.common.domain.SeckillOrder;
+import org.jboss.logging.Param;
 
 /**
  * 订单服务接口
@@ -32,4 +33,11 @@ public interface OrderServiceApi {
      * @param goodsId
      */
     OrderInfo createOrder(Long userId, Long goodsdId);
+
+
+    String findByOrderStatus( String orderId);
+
+    void updateOrderStatus( String orderId);
+
+    void saveOrderInfo( String pkid,  String orderId, String orderStatus);
 }

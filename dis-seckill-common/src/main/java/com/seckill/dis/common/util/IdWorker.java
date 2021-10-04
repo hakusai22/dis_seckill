@@ -1,5 +1,7 @@
 package com.seckill.dis.common.util;
 
+import cn.hutool.core.util.IdUtil;
+
 public class IdWorker {
     //下面两个每个5位，加起来就是10位的工作机器id
     private long workerId;    //工作者id
@@ -109,6 +111,10 @@ public class IdWorker {
         IdWorker worker = new IdWorker(1,1,1);
         for (int i = 0; i < 30; i++) {
             System.out.println(worker.nextId());
+        }
+        System.out.println("=================================");
+        for (int i = 0; i < 20; i++) {
+            System.out.println(IdUtil.getSnowflake(1).nextId());
         }
     }
 

@@ -66,9 +66,7 @@ public class SeckillController implements InitializingBean {
     @Reference(interfaceClass = MqProviderApi.class)
     MqProviderApi sender;
 
-    /**
-     * 用于内存标记，标记库存是否为空，从而减少对redis的访问
-     */
+   // 用于内存标记，标记库存是否为空，从而减少对redis的访问
     private Map<Long, Boolean> localOverMap = new HashMap<>();
 
     /**
@@ -234,9 +232,7 @@ public class SeckillController implements InitializingBean {
         return Result.success(true);     
     }
 
-    /**
-     * 检验检验码的计算结果
-     */
+    // 检验检验码的计算结果
     private boolean checkVerifyCode(UserVo user, long goodsId, int verifyCode) {
         // 从redis中获取验证码计算结果
         Integer oldCode = redisService.get(SkKeyPrefix.VERIFY_RESULT, user.getUuid() + "_" + goodsId, Integer.class);
@@ -249,9 +245,7 @@ public class SeckillController implements InitializingBean {
         return true;
     }
 
-    /**
-     * 创建秒杀地址, 并将其存储在redis中
-     */
+    // 创建秒杀地址, 并将其存储在redis中
     @LogAnnotation(module = "创建秒杀地址",operation = "创建秒杀地址")
     public String createSkPath(UserVo user, long goodsId) {
         // 随机生成秒杀地址
@@ -261,9 +255,7 @@ public class SeckillController implements InitializingBean {
         return path;
     }
 
-    /**
-     * 验证路径是否正确
-     */
+    // 验证路径是否正确
     public boolean checkPath(UserVo user, long goodsId, String path) {
         if (user == null || path == null)
             return false;

@@ -20,8 +20,8 @@ public class RedisLockImpl implements DLockApi {
     private JedisPool jedisPool;
 
     private final String LOCK_SUCCESS = "OK";
-    private final String SET_IF_NOT_EXIST = "NX";
-    private final String SET_WITH_EXPIRE_TIME = "PX";
+    private final String SET_IF_NOT_EXIST = "NX"; //不存在设置
+    private final String SET_WITH_EXPIRE_TIME = "PX"; //毫秒
     private final Long RELEASE_SUCCESS = 1L;
 
     /**

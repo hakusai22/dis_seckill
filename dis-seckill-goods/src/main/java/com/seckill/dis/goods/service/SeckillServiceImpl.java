@@ -62,7 +62,7 @@ public class SeckillServiceImpl implements SeckillServiceApi {
     @Transactional
     @Override
     public OrderInfo seckill(long userId, long goodsId) {
-        // userId用户ID加锁
+        // 商品ID加分布式锁
         String uniqueValue = UUIDUtil.uuid() + "-" + Thread.currentThread().getId();
         String lockKey = "redis-lock" + userId;
         OrderInfo order=null;

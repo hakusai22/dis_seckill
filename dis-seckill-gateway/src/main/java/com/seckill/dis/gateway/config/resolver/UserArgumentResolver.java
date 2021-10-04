@@ -42,6 +42,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     public boolean supportsParameter(MethodParameter methodParameter) {
          logger.info("supportsParameter");
         Class<?> parameterType = methodParameter.getParameterType();
+        //判断参数类型是不是UserVo
         return parameterType == UserVo.class;
     }
 
@@ -52,7 +53,9 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer,
                                   NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
         log.info("【User用户信息获取】,message={}", "用户手机号: " + UserContext.getUser().getPhone());
+        //使用TreadLocal中获取用户信息
         UserVo user = UserContext.getUser();
+        //使用完后remove操作
         UserContext.close();
         return user;
     }

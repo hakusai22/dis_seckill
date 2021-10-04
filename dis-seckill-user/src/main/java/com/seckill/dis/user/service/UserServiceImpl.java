@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserServiceApi {
      */
     @Override
     public CodeMsg register(RegisterVo userModel) {
-        // 加锁
+        // 对用户的手机号进行加分布式锁
         String uniqueValue = UUIDUtil.uuid() + "-" + Thread.currentThread().getId();
         String lockKey = "redis-lock" + userModel.getPhone();
         boolean lock = dLock.lock(lockKey, uniqueValue, 60 * 1000);
@@ -64,16 +64,12 @@ public class UserServiceImpl implements UserServiceApi {
 
         // 生成skuser对象
         SeckillUser newUser = new SeckillUser();
-
         newUser.setPhone(userModel.getPhone());
         newUser.setNickname(userModel.getNickname());
         newUser.setHead(userModel.getHead());
-
         newUser.setSalt(MD5Util.SALT);
-
         String dbPass = MD5Util.formPassToDbPass(userModel.getPassword(), MD5Util.SALT);
         newUser.setPassword(dbPass);
-
         Date date = new Date(System.currentTimeMillis());
         newUser.setRegisterDate(date);
 

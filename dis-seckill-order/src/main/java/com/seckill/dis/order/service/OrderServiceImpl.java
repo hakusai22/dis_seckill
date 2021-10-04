@@ -9,6 +9,7 @@ import com.seckill.dis.common.api.user.vo.UserVo;
 import com.seckill.dis.common.domain.OrderInfo;
 import com.seckill.dis.common.domain.SeckillOrder;
 import com.seckill.dis.common.util.IdWorker;
+import com.seckill.dis.order.persistence.OrderInfoMapper;
 import com.seckill.dis.order.persistence.OrderMapper;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -26,6 +27,9 @@ import java.util.Date;
 @Service(interfaceClass = OrderServiceApi.class)
 public class OrderServiceImpl implements OrderServiceApi {
     private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+
+    @Autowired
+    OrderInfoMapper orderInfoMapper;
 
     @Autowired
     OrderMapper orderMapper;
@@ -86,5 +90,20 @@ public class OrderServiceImpl implements OrderServiceApi {
         // 将秒杀订单概要信息存储于redis中
         redisService.set(OrderKeyPrefix.SK_ORDER, ":" + userId + "_" + goods.getId(), seckillOrder);
         return orderInfo;
+    }
+
+    @Override
+    public String findByOrderStatus(String orderId) {
+        return orderInfoMapper.findByOrderStatus(orderId);
+    }
+
+    @Override
+    public void updateOrderStatus(String orderId) {
+        orderInfoMapper.updateOrderStatus(orderId);
+    }
+
+    @Override
+    public void saveOrderInfo(String pkid, String orderId, String orderStatus) {
+        orderInfoMapper.saveOrderInfo(pkid,orderId,orderStatus);
     }
 }

@@ -24,10 +24,12 @@ import java.lang.reflect.Method;
 @Slf4j
 public class LogAspect {
 
+    //切点 自定义注解
     @Pointcut("@annotation(com.seckill.dis.gateway.aop_log.LogAnnotation)")
     public void logPointCut() {
     }
 
+    //环绕通知
     @Around("logPointCut()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         long beginTime = System.currentTimeMillis();
@@ -53,7 +55,6 @@ public class LogAspect {
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = signature.getName();
         log.info("request method:{}", className + "." + methodName + "()");
-
 //      //请求的参数
         Object[] args = joinPoint.getArgs();
 
@@ -61,7 +62,6 @@ public class LogAspect {
 //            String params = JSON.toJSONString(args[0]);
 //            log.info("params:{}", params);
         }
-
         //获取request 设置IP地址
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         log.info("ip:{}", IpUtils.getIpAddr(request));
