@@ -25,7 +25,7 @@
             width:100%;
         }
         body{
-            background:url('/img/bg2.jpg') no-repeat;
+            background:url('/img/bg3.jpg') no-repeat;
             background-size:100% 100%;
         }
         #goodslist td{
@@ -40,6 +40,7 @@
     <div class="panel-heading"><h1>秒杀商品列表</h1></div>
     <table class="table" id="goodslist">
         <tr>
+            <td width="100" height="100"> <b style="font-size: medium">商品ID</b></td>
             <td><b style="font-size: medium">商品名称</b></td>
             <td><b style="font-size: medium">商品图片</b></td>
             <td><b style="font-size: medium">商品原价</b></td>
@@ -49,17 +50,18 @@
         </tr>
 
         <tr th:each="goods,goodsStat : ${goodsList}">
+            <td th:text="${goods.id}"></td>
             <td th:text="${goods.goodsName}"></td>
             <td><img th:src="@{${goods.goodsImg}}" width="100" height="100"/></td>
             <td th:text="${goods.goodsPrice}"></td>
             <td th:text="${goods.seckillPrice}" style="color: crimson"></td>
             <td th:text="${goods.stockCount}"></td>
-            <!--<td><a th:href="'/goods/to_detail/'+${goods.id}">详情</a></td>-->
+<!--            <td><a th:href="'/goods/to_detail/'+${goods.id}">详情</a></td>-->
             <!--静态化详情页面-->
             <!--<td><a th:href="'/goods_detail.htm?goodsId='+${goods.id}">详情</a></td>-->
             <td>
                 <a th:href="'/goods_detail.htm?goodsId='+${goods.id}">
-                    <button class="btn btn-primary" type="button" id="buyButton">详情</button>
+                    <button class="btn btn-primary" type="button" id="buyButton">商品详情</button>
                 </a>
             </td>
         </tr>

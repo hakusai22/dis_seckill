@@ -16,6 +16,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class SeckillUser implements Serializable{
 
+    private static final long serialVersionUID = 1338341313176188336L;
+
     private Long uuid;
     private Long phone;
     private String nickname;
@@ -25,5 +27,7 @@ public class SeckillUser implements Serializable{
     private Date registerDate;
     private Date lastLoginDate;
     private Integer loginCount;
+    private String email;
+    private String address;
 }
 

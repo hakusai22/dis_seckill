@@ -34,11 +34,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.text.ParseException;
+import java.util.*;
 
 
 /**
@@ -47,7 +44,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/seckill/")
-public class SeckillController implements InitializingBean {
+public class SeckillController implements InitializingBean  {
 
     private static Logger logger = LoggerFactory.getLogger(SeckillController.class);
 
@@ -144,10 +141,10 @@ public class SeckillController implements InitializingBean {
         // 从redis中取缓存，减少数据库的访问
         SeckillOrder order = redisService.get(OrderKeyPrefix.SK_ORDER, ":" + user.getUuid() + "_" + goodsId, SeckillOrder.class);
         // 如果缓存中不存该数据，则从数据库中取
-        if (order == null) {
+        if (Objects.isNull(order)) {
             order = orderService.getSeckillOrderByUserIdAndGoodsId(user.getUuid(), goodsId);
         }
-        if (order != null) {
+        if (Objects.nonNull(order)) {
             return Result.error(CodeMsg.REPEATE_SECKILL);
         }
         // 商品有库存且用户为秒杀商品，则将秒杀请求放入MQ
@@ -161,7 +158,6 @@ public class SeckillController implements InitializingBean {
     /**
      * 用于返回用户秒杀的结果
      *
-     * @param model
      * @param user
      * @param goodsId
      * @return orderId：成功, -1：秒杀失败, 0： 排队中
@@ -226,7 +222,7 @@ public class SeckillController implements InitializingBean {
      */
     @RequestMapping(value = "test", method = RequestMethod.GET)
     @ResponseBody
-    public Result<Boolean> test() {
+    public Result<Boolean> test() throws ParseException {
         logger.info("商品信息热加载");
         afterPropertiesSet();
         return Result.success(true);     
@@ -270,7 +266,7 @@ public class SeckillController implements InitializingBean {
      * 服务器程序启动的时候加载商品列表信息
      */
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws ParseException {
         List<GoodsVo> goods = goodsService.listGoodsVo();
         if (goods == null) {
             return;

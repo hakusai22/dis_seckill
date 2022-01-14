@@ -9,6 +9,7 @@ import java.io.Serializable;
  * @author xizizzz
  */
 public class GoodsKeyPrefix extends BaseKeyPrefix  implements Serializable {
+
     public GoodsKeyPrefix(int expireSeconds, String prefix) {
         super(expireSeconds, prefix);
     }
@@ -16,6 +17,7 @@ public class GoodsKeyPrefix extends BaseKeyPrefix  implements Serializable {
     // 缓存在redis中的商品列表页面的key的前缀
     public static GoodsKeyPrefix goodsListKeyPrefix = new GoodsKeyPrefix(60, "goodsList");
     public static GoodsKeyPrefix GOODS_LIST_HTML = new GoodsKeyPrefix(60, "goodsListHtml");
+    public static GoodsKeyPrefix ADMIN_GOODS_LIST_HTML = new GoodsKeyPrefix(60, "adminGoodsListHtml");
 
     // 缓存在redis中的商品详情页面的key的前缀
     public static GoodsKeyPrefix goodsDetailKeyPrefix = new GoodsKeyPrefix(60, "goodsDetail");

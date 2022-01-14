@@ -31,6 +31,10 @@ public class MqProviderImpl implements MqProviderApi, RabbitTemplate.ConfirmCall
         rabbitTemplate.setConfirmCallback(this);
     }
 
+    /**
+     * 将用户秒杀信息投递到MQ中（使用direct模式的exchange）
+     * @param message
+     */
     @Override
     public void sendSkMessage(SkMessage message) {
         logger.info("MQ send message: " + message);

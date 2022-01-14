@@ -22,4 +22,12 @@ public class SkUserKeyPrefix extends BaseKeyPrefix  implements Serializable {
      */
     public static SkUserKeyPrefix SK_USER_PHONE = new SkUserKeyPrefix(0, "id");
 
+    //管理员用户
+    public static SkUserKeyPrefix ADMIN_USER_PHONE = new SkUserKeyPrefix(0, "id");
+
+    /**
+     * 管理员用户cookie
+     */
+    public static SkUserKeyPrefix ADMIN_TOKEN = new SkUserKeyPrefix(TOKEN_EXPIRE, "token");
+
 }

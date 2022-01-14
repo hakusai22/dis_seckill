@@ -134,6 +134,7 @@ function render(detail) {
     $("#goodsPrice").text(goods.goodsPrice);
     $("#seckillPrice").text(goods.seckillPrice);
     $("#stockCount").text(goods.stockCount);
+    $("#goodsTitle").text(goods.goodsTitle);
     countDown();
 }
 

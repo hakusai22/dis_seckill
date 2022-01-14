@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.dis.user.persistence.AdminUserMapper">
+
+    <resultMap type="com.seckill.dis.user.domain.AdminUser" id="AdminUser">
+        <result property="uuid" column="UUID"/>
+        <result property="phone" column="phone"/>
+        <result property="nickname" column="nickname"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+    </resultMap>
+
+    <select id="getUserByPhone" parameterType="java.lang.Long" resultType="com.seckill.dis.user.domain.AdminUser">
+        SELECT *
+        FROM admin_user
+        WHERE phone = #{phone}
+    </select>
+
+    <insert id="insertUser" parameterType="com.seckill.dis.user.domain.AdminUser" useGeneratedKeys="true">
+        INSERT INTO admin_user (phone, nickname, password, salt)
+        VALUES (#{phone}, #{nickname}, #{password}, #{salt})
+        <selectKey keyColumn="UUID" keyProperty="uuid" resultType="java.lang.Long">
+            SELECT last_insert_id()
+        </selectKey>
+    </insert>
+
+    <select id="findPhone" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT phone
+        FROM admin_user
+        WHERE phone = #{phone}
+    </select>
+
+</mapper>

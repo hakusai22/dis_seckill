@@ -36,6 +36,10 @@
             <td colspan="3" th:text="${goods.goodsName}"></td>
         </tr>
         <tr>
+            <td>商品介绍</td>
+            <td colspan="3" th:text="${goods.goodsTitle}"></td>
+        </tr>
+        <tr>
             <td>商品图片</td>
             <td colspan="3"><img th:src="@{${goods.goodsImg}}" width="200" height="200"/></td>
         </tr>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>秒杀用户列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <!-- jquery：用户异步发出请求（注：@为thymeleaf的静态资源引入符） -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap：页面展示 -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- jquery-validator：表单校验 -->
+    <script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+    <!-- layer：弹出窗-->
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <!-- md5.js：计算MD的js脚本-->
+    <script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+    <!-- common.js：js通用回调函数 -->
+    <script type="text/javascript" th:src="@{/js/common_encode.js}"></script>
+
+    <style type="text/css">
+        html,body{
+            height:100%;
+            width:100%;
+        }
+        body{
+            background:url('/img/bg3.jpg') no-repeat;
+            background-size:100% 100%;
+        }
+        #goodslist td{
+            border-top:1px solid #39503f61;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h1>秒杀商品列表</h1></div>
+    <table class="table" id="usersList">
+        <tr>
+            <td><b style="font-size: medium">用户ID</b></td>
+            <td><b style="font-size: medium">用户名称</b></td>
+            <td><b style="font-size: medium">用户Iphone</b></td>
+            <td><b style="font-size: medium">注册的时间</b></td>
+            <td><b style="font-size: medium">上次登录的时间</b></td>
+            <td style="color: crimson"><b style="font-size: medium">登录次数</b></td>
+        </tr>
+
+        <tr th:each="user : ${usersList}">
+            <td th:text="${user.uuid}"></td>
+            <td th:text="${user.nickname}" style="color: crimson"></td>
+            <td th:text="${user.phone}" style="color: crimson"></td>
+            <td th:text="${user.registerDateString}" style="color: crimson"></td>
+            <td th:text="${user.lastLoginDateString}" style="color: crimson"></td>
+            <td th:text="${user.loginCount}" style="color: crimson"></td>
+            <td>
+                <a th:href="'/goods_detail.htm?goodsId='+${user.uuid}">
+                    <button class="btn btn-primary" type="button" id="buyButton">删除</button>
+                </a>
+            </td>
+            <td>
+                <a th:href="'/goods_detail.htm?goodsId='+${user.uuid}">
+                    <button class="btn btn-primary" type="button" id="buyButton">修改</button>
+                </a>
+            </td>
+
+        </tr>
+    </table>
+</div>
+
+</body>
+
+</html>

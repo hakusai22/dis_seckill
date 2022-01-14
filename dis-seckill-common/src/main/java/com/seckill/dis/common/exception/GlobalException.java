@@ -13,7 +13,6 @@ public class GlobalException extends RuntimeException {
 
     /**
      * 使用构造器接收CodeMsg
-     *
      * @param codeMsg
      */
     public GlobalException(CodeMsg codeMsg) {

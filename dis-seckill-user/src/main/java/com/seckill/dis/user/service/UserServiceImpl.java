@@ -1,5 +1,6 @@
 package com.seckill.dis.user.service;
 
+import com.alibaba.fastjson.JSON;
 import com.seckill.dis.common.api.cache.DLockApi;
 import com.seckill.dis.common.api.cache.RedisServiceApi;
 import com.seckill.dis.common.api.cache.vo.SkUserKeyPrefix;
@@ -12,7 +13,9 @@ import com.seckill.dis.common.exception.GlobalException;
 import com.seckill.dis.common.result.CodeMsg;
 import com.seckill.dis.common.util.MD5Util;
 import com.seckill.dis.common.util.UUIDUtil;
+import com.seckill.dis.user.domain.AdminUser;
 import com.seckill.dis.user.domain.SeckillUser;
+import com.seckill.dis.user.persistence.AdminUserMapper;
 import com.seckill.dis.user.persistence.SeckillUserMapper;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -21,7 +24,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Service(interfaceClass = UserServiceApi.class)
 public class UserServiceImpl implements UserServiceApi {
@@ -31,12 +37,20 @@ public class UserServiceImpl implements UserServiceApi {
     @Autowired
     private SeckillUserMapper userMapper;
 
+    @Autowired
+    private AdminUserMapper adminUserMapper;
+
     // 由于需要将一个cookie对应的用户存入第三方缓存中，这里用redis，所以需要引入redis serice
     @Reference(interfaceClass = RedisServiceApi.class)
     private RedisServiceApi redisService;
 
     @Reference(interfaceClass = DLockApi.class)
     private DLockApi dLock;
+
+    @Override
+    public void updateLoginCount(Long phone) {
+        userMapper.updateLoginCount(phone,new Date());
+    }
 
     /**
      * 注册用户
@@ -68,6 +82,8 @@ public class UserServiceImpl implements UserServiceApi {
         newUser.setNickname(userModel.getNickname());
         newUser.setHead(userModel.getHead());
         newUser.setSalt(MD5Util.SALT);
+        newUser.setEmail(user.getEmail());
+        newUser.setAddress(user.getAddress());
         String dbPass = MD5Util.formPassToDbPass(userModel.getPassword(), MD5Util.SALT);
         newUser.setPassword(dbPass);
         Date date = new Date(System.currentTimeMillis());
@@ -101,10 +117,14 @@ public class UserServiceImpl implements UserServiceApi {
         String mobile = loginVo.getMobile();
         String password = loginVo.getPassword();
 
+        SeckillUser user1 = userMapper.getUserByPhone(Long.parseLong(mobile));
+        if(Objects.isNull(user1)) {
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
         // 判断手机号是否存在(首先从缓存中取，再从数据库取)
         SeckillUser user = this.getSeckillUserByPhone(Long.parseLong(mobile));
         // 缓存中、数据库中都不存在该用户信息，直接返回
-        if (user == null)
+        if (Objects.isNull(user))
             throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         logger.info("用户：" + user.toString());
 
@@ -120,6 +140,35 @@ public class UserServiceImpl implements UserServiceApi {
         String token = UUIDUtil.uuid();
         // 每次访问都会生成一个新的session存储于redis和反馈给客户端，一个session对应存储一个user对象
         redisService.set(SkUserKeyPrefix.TOKEN, token, user);
+        return token;
+    }
+
+    @Override
+    public String adminLogin(LoginVo loginVo) {
+        logger.info(loginVo.toString());
+        // 获取用户提交的手机号码和密码
+        String mobile = loginVo.getMobile();
+        String password = loginVo.getPassword();
+
+        // 判断手机号是否存在(首先从缓存中取，再从数据库取)
+        AdminUser user = this.getAdminUserByPhone(Long.parseLong(mobile));
+        // 缓存中、数据库中都不存在该用户信息，直接返回
+        if (Objects.isNull(user))
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        logger.info("用户：" + user);
+
+        // 判断手机号对应的密码是否一致
+        String dbPassword = user.getPassword();
+        String dbSalt = user.getSalt();
+        String calcPass = MD5Util.formPassToDbPass(password, dbSalt);
+        if (!calcPass.equals(dbPassword))
+            throw new GlobalException(CodeMsg.PASSWORD_ERROR);
+
+        // 执行到这里表明登录成功，更新用户cookie
+        // 生成cookie
+        String token = UUIDUtil.uuid();
+        // 每次访问都会生成一个新的session存储于redis和反馈给客户端，一个session对应存储一个user对象
+        redisService.set(SkUserKeyPrefix.ADMIN_TOKEN, token, user);
         return token;
     }
 
@@ -159,6 +208,20 @@ public class UserServiceImpl implements UserServiceApi {
         return user;
     }
 
+    private AdminUser getAdminUserByPhone(long phone) {
+        // 1. 从redis中获取用户数据缓存
+        AdminUser user = redisService.get(SkUserKeyPrefix.ADMIN_USER_PHONE, "_" + phone, AdminUser.class);
+        if (user != null)
+            return user;
+        // 2. 如果缓存中没有用户数据，则从数据库中查询数据并将数据写入缓存
+        // 先从数据库中取出数据
+        user = adminUserMapper.getUserByPhone(phone);
+        // 然后将数据返回并将数据缓存在redis中
+        if (user != null)
+            redisService.set(SkUserKeyPrefix.ADMIN_USER_PHONE, "_" + phone, user);
+        return user;
+    }
+
     @Override
     public boolean checkUsername(String username) {
         return false;
@@ -167,6 +230,18 @@ public class UserServiceImpl implements UserServiceApi {
     @Override
     public UserInfoVo getUserInfo(int uuid) {
         return null;
+    }
+
+    @Override
+    public List<com.seckill.dis.common.domain.SeckillUser> getAllUserInfo() {
+        List<SeckillUser> allUserInfo = userMapper.getAllUserInfo();
+        List<com.seckill.dis.common.domain.SeckillUser> projectInfoVO= JSON.parseArray(JSON.toJSONString(allUserInfo),com.seckill.dis.common.domain.SeckillUser.class);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        projectInfoVO.forEach(projectInfoVO1->{
+            projectInfoVO1.setLastLoginDateString(sdf.format(projectInfoVO1.getLastLoginDate()));
+            projectInfoVO1.setRegisterDateString(sdf.format(projectInfoVO1.getRegisterDate()));
+        });
+        return projectInfoVO;
     }
 
     @Override

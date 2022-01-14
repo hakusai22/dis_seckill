@@ -1,12 +1,11 @@
 package com.seckill.dis.goods.persistence;
 
 import com.seckill.dis.common.api.goods.vo.GoodsVo;
+import com.seckill.dis.common.api.goods.vo.InsertGoodsDTO;
 import com.seckill.dis.common.domain.SeckillGoods;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,4 +35,13 @@ public interface GoodsMapper {
      */
     @Update("UPDATE seckill_goods SET stock_count = stock_count-1 WHERE goods_id=#{goodsId}")
     int reduceStack(@Param("goodsId") Long goodsId);
+
+    @Delete("delete from seckill_goods WHERE id=#{goodsId}")
+    int deleteGoods(@Param("goodsId") Long goodsId);
+
+    @Update("UPDATE seckill_goods SET end_date =#{endDate} WHERE goods_id=#{goodsId}")
+    int updateGoods(@Param("goodsId") Long goodsId,@Param("endDate") Date endDate);
+
+    long insert(InsertGoodsDTO insertGoodsDTO);
+
 }

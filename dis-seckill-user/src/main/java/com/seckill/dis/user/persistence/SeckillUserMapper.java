@@ -3,6 +3,9 @@ package com.seckill.dis.user.persistence;
 import com.seckill.dis.user.domain.SeckillUser;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * seckill_user表交互接口
  * @author xizizzz
@@ -17,12 +20,19 @@ public interface SeckillUserMapper {
      */
     SeckillUser getUserByPhone(@Param("phone") Long phone);
 
+    List<SeckillUser> getAllUserInfo();
+
     /**
      * 更新用户信息
      * @param updatedUser
      */
     @Update("UPDATE seckill_user SET password=#{password} WHERE id=#{id}")
     void updatePassword(SeckillUser updatedUser);
+
+    /**
+     * 更新用户登录的次数
+     */
+    void updateLoginCount(Long phone, Date date);
 
 
     /**

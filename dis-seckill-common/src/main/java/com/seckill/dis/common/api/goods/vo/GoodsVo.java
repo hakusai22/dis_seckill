@@ -1,6 +1,11 @@
 package com.seckill.dis.common.api.goods.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.seckill.dis.common.domain.Goods;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,43 +17,25 @@ import java.util.Date;
  *
  * @author xizizzz
  */
+
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class GoodsVo extends Goods implements Serializable {
 
-    /*只包含了部分 seckill_goods 表的信息*/
     private Double seckillPrice;
+
     private Integer stockCount;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date startDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date endDate;
 
-    public Double getSeckillPrice() {
-        return seckillPrice;
-    }
+    private String startDateString;
 
-    public void setSeckillPrice(Double seckillPrice) {
-        this.seckillPrice = seckillPrice;
-    }
+    private String endDateString;
 
-    public Integer getStockCount() {
-        return stockCount;
-    }
-
-    public void setStockCount(Integer stockCount) {
-        this.stockCount = stockCount;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
 }

@@ -11,12 +11,32 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class Index {
     /**
-     * 首页
+     * 用户首页
      * @return
      */
     @LogAnnotation(module = "首页",operation = "login登录页面")
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index() {
+    public String userIndex() {
         return "login";// login页面
+    }
+
+    /**
+     * 管理员首页
+     * @return
+     */
+    @LogAnnotation(module = "首页",operation = "login登录页面")
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String adminIndex() {
+        return "adminLogin";// login页面
+    }
+
+    /**
+     * 添加商品首页
+     * @return
+     */
+    @LogAnnotation(module = "添加商品首页",operation = "添加商品首页")
+    @RequestMapping(value = "/insertGoods", method = RequestMethod.GET)
+    public String insertGoods() {
+        return "insertGoods";// login页面
     }
 }

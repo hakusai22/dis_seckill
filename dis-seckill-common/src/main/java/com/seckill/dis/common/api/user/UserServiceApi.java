@@ -4,10 +4,12 @@ import com.seckill.dis.common.api.user.vo.LoginVo;
 import com.seckill.dis.common.api.user.vo.RegisterVo;
 import com.seckill.dis.common.api.user.vo.UserInfoVo;
 import com.seckill.dis.common.api.user.vo.UserVo;
+import com.seckill.dis.common.domain.SeckillUser;
 import com.seckill.dis.common.result.CodeMsg;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 用户服务接口
@@ -16,6 +18,12 @@ import javax.validation.Valid;
 public interface UserServiceApi {
 
     String COOKIE_NAME_TOKEN = "token";
+
+
+    /**
+     * 更新登录的次数和登录的时间
+     */
+    void updateLoginCount(Long phone);
 
     /**
      * 注册
@@ -36,16 +44,28 @@ public interface UserServiceApi {
     UserInfoVo getUserInfo(int uuid);
 
     /**
+     * 获取用户信息
+     */
+    List<SeckillUser> getAllUserInfo();
+
+
+    /**
      * 更新用户信息
      * @param userInfoVo
      */
     UserInfoVo updateUserInfo(UserInfoVo userInfoVo);
 
     /**
-     * 登录
+     * 用户登录
      * @param loginVo
      */
     String login(@Valid LoginVo loginVo);
+
+    /**
+     * 管理员登录
+     * @param loginVo
+     */
+    String adminLogin(@Valid LoginVo loginVo);
 
     /**
      * 根据phone获取用户

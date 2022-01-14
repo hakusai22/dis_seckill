@@ -1,5 +1,9 @@
 package com.seckill.dis.common.api.user.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -8,56 +12,28 @@ import java.io.Serializable;
  *
  * @author xizizzz
  */
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterVo implements Serializable {
 
     @NotNull
     private Long phone;
+
     @NotNull
     private String nickname;
 
+
     private String head;
+
     @NotNull
     private String password;
 
-    public Long getPhone() {
-        return phone;
-    }
+    @NotNull
+    private String email;
 
-    public void setPhone(Long phone) {
-        this.phone = phone;
-    }
+    @NotNull
+    private String address;
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getHead() {
-        return head;
-    }
-
-    public void setHead(String head) {
-        this.head = head;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "RegisterVo{" +
-                "phone=" + phone +
-                ", nickname='" + nickname + '\'' +
-                ", head='" + head + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }

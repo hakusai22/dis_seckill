@@ -14,6 +14,8 @@
         <result property="registerDate" column="register_date"/>
         <result property="lastLoginDate" column="last_login_date"/>
         <result property="loginCount" column="login_count"/>
+        <result property="email" column="email"/>
+        <result property="address" column="address"/>
     </resultMap>
 
     <select id="getUserByPhone" parameterType="java.lang.Long" resultType="com.seckill.dis.user.domain.SeckillUser">
@@ -23,8 +25,8 @@
     </select>
 
     <insert id="insertUser" parameterType="com.seckill.dis.user.domain.SeckillUser" useGeneratedKeys="true">
-        INSERT INTO seckill_user (phone, nickname, password, salt, head, register_date, last_login_date, login_count)
-        VALUES (#{phone}, #{nickname}, #{password}, #{salt}, #{head}, #{registerDate}, #{lastLoginDate}, #{loginCount})
+        INSERT INTO seckill_user (phone, nickname, password, salt, head, register_date, last_login_date, login_count,email,address)
+        VALUES (#{phone}, #{nickname}, #{password}, #{salt}, #{head}, #{registerDate}, #{lastLoginDate}, #{loginCount},#{email},#{address})
         <selectKey keyColumn="UUID" keyProperty="uuid" resultType="java.lang.Long">
             SELECT last_insert_id()
         </selectKey>
@@ -34,6 +36,15 @@
         SELECT phone
         FROM seckill_user
         WHERE phone = #{phone}
+    </select>
+
+    <select id="updateLoginCount" parameterType="java.lang.Long" >
+       UPDATE seckill_user set login_count=login_count+1,set last_login_date=#{date} where phone=#{phone}
+    </select>
+
+    <select id="getAllUserInfo"  resultMap="seckillUser">
+        SELECT *
+        FROM seckill_user
     </select>
 
 </mapper>

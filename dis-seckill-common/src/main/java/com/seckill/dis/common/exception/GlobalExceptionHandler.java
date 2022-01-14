@@ -28,7 +28,6 @@ public class GlobalExceptionHandler {
 
     /**
      * 异常处理
-     *
      * @param request 绑定了出现异常的请求信息
      * @param e       该请求所产生的异常
      * @return 向客户端返回的结果（这里为json数据）
@@ -37,13 +36,11 @@ public class GlobalExceptionHandler {
     public Result<String> exceptionHandler(HttpServletRequest request, Exception e) {
         logger.info("出现异常");
         e.printStackTrace();// 打印原始的异常信息，方便调试
-
+        GlobalException exception = (GlobalException) e;
         // 如果所拦截的异常是自定义的全局异常，这按自定义异常的处理方式处理，否则按默认方式处理
         if (e instanceof GlobalException) {
             logger.debug("common 模块中的异常");
-            GlobalException exception = (GlobalException) e;
             return Result.error(exception.getCodeMsg());// 向客户端返回异常信息
-
         } else if (e instanceof BindException) {
             BindException bindException = (BindException) e;
             List<ObjectError> errors = bindException.getAllErrors();
@@ -51,7 +48,7 @@ public class GlobalExceptionHandler {
             String message = error.getDefaultMessage();// 获取其中的信息
             return Result.error(CodeMsg.BIND_ERROR.fillArgs(message));// 将错误信息动态地拼接到已定义的部分信息上
         } else {
-            return Result.error(CodeMsg.SERVER_ERROR);
+            return Result.error(exception.getCodeMsg());
         }
     }
 }
