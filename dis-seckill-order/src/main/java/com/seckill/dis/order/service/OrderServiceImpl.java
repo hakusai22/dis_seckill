@@ -63,7 +63,9 @@ public class OrderServiceImpl implements OrderServiceApi {
         GoodsVo goods = redisService.get(GoodsKeyPrefix.seckillGoodsInf, ""+goodsId ,GoodsVo.class);
 
         // 雪花算法 分布式id
-        long id1 = new IdWorker(1, 1, 1).nextId();
+        IdWorker idWorker = new IdWorker(1, 1, 1);
+        String s = String.valueOf(idWorker.nextId());
+        String id1 = s.substring(s.length() - 9);
         orderInfo.setCreateDate(new Date()).setDeliveryAddrId(0L)
         .setGoodsCount(1)// 订单中商品的数量
         .setGoodsId(goods.getId())
@@ -71,18 +73,23 @@ public class OrderServiceImpl implements OrderServiceApi {
         .setGoodsPrice(goods.getSeckillPrice())// 秒杀价格
         .setOrderChannel(1)
         .setStatus(0)
-        .setUserId(userId);
-//        .setId(id1);
+        .setUserId(userId)
+        .setCreateDate(new Date())
+        .setId(Long.valueOf(id1));
         System.out.println(orderInfo);
 
         // 将订单信息插入 order_info 表中
         long orderId = orderMapper.insert(orderInfo);
         logger.debug("将订单信息插入 order_info 表中: 记录为" + orderId);
 
+        String s2 = String.valueOf(idWorker.nextId());
+        String id2 = s.substring(s2.length() - 9);
         SeckillOrder seckillOrder = new SeckillOrder();
         seckillOrder.setGoodsId(goods.getId())
         .setOrderId(orderInfo.getId())
-        .setUserId(userId);
+        .setUserId(userId)
+                .setCreateTime(new Date())
+                .setId(Long.valueOf(id2));
         // 将秒杀订单插入 seckill_order 表中
         orderMapper.insertSeckillOrder(seckillOrder);
         logger.debug("将秒杀订单插入 seckill_order 表中");

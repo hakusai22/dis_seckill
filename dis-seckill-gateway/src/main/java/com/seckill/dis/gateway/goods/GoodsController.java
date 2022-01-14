@@ -82,20 +82,9 @@ public class GoodsController {
      */
     @PostMapping(value = "insertGoods")
     @ResponseBody
-    public String insertGoods(@RequestBody InsertGoodsDTO insertGoodsDTO, Model model, HttpServletResponse response, HttpServletRequest request, UserVo user) throws ParseException {
+    public Result<String> insertGoods(InsertGoodsDTO insertGoodsDTO, Model model, HttpServletResponse response, HttpServletRequest request, UserVo user) throws ParseException {
         goodsService.insertGoods(insertGoodsDTO);
-
-        List<GoodsVo> goodsVoList = goodsService.listGoodsVo();
-        model.addAttribute("goodsList", goodsVoList);
-        model.addAttribute("user", user);
-        // 3. 渲染html
-        WebContext webContext = new WebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap());
-        // (第一个参数为渲染的html文件名，第二个为web上下文：里面封装了web应用的上下文)
-        String html = thymeleafViewResolver.getTemplateEngine().process("adminGoods_list", webContext);
-        if (!StringUtils.isEmpty(html)) // 如果html文件不为空，则将页面缓存在redis中
-            redisService.set(GoodsKeyPrefix.GOODS_LIST_HTML, "", html);
-
-        return html;
+        return  Result.success("添加成功");
     }
 
 
@@ -113,13 +102,8 @@ public class GoodsController {
         String html = thymeleafViewResolver.getTemplateEngine().process("adminGoods_list", webContext);
         if (!StringUtils.isEmpty(html)) // 如果html文件不为空，则将页面缓存在redis中
             redisService.set(GoodsKeyPrefix.GOODS_LIST_HTML, "", html);
-
         return html;
     }
-
-
-
-
 
     /**
      * 获取 SKUser 对象，并将其传递到页面解析器

@@ -55,7 +55,7 @@
 
     <div class="form-group">
         <div class="row">
-            <label class="form-label col-md-4">昵称</label>
+            <label class="form-label col-md-4">真实名字</label>
             <div class="col-md-5">
                 <input id="nickname" name="nickname" class="form-control" type="text" placeholder="昵称" required="true"/>
             </div>
@@ -70,6 +70,28 @@
             <label class="form-label col-md-4">头像</label>
             <div class="col-md-5">
                 <input id="head" name="head" class="form-control" type="text" placeholder="头像" required="false"/>
+            </div>
+            <div class="col-md-1">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <label class="form-label col-md-4">邮箱</label>
+            <div class="col-md-5">
+                <input id="email" name="email" class="form-control" type="text" placeholder="邮箱" required="false"/>
+            </div>
+            <div class="col-md-1">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <label class="form-label col-md-4">地址</label>
+            <div class="col-md-5">
+                <input id="address" name="address" class="form-control" type="text" placeholder="地址" required="false"/>
             </div>
             <div class="col-md-1">
             </div>
@@ -129,6 +151,8 @@
         var phone = $("#phone").val();
         var nickname = $("#nickname").val();
         var head = $("#head").val();
+        var email = $("#email").val();
+        var address = $("#address").val();
 
         // 获取用户输入密码
         var password01 = $("#password01").val();
@@ -157,7 +181,9 @@
                 phone: phone,
                 nickname: nickname,
                 head: head,
-                password: password
+                password: password,
+                eamil: eamil,
+                address: address
             },
 
             // 请求成功时候的回调（data为服务端返回的json对象，其中封装的是CodeMsg对象的数据）

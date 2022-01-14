@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Objects;
+
 /**
  * 订单服务接口
  * @author xizizzz
@@ -45,10 +47,9 @@ public class OrderController {
 
         // 获取订单信息
         OrderInfo order = orderService.getOrderById(orderId);
-        if (order == null) {
+        if (Objects.isNull(order)) {
             return Result.error(CodeMsg.ORDER_NOT_EXIST);
         }
-
         // 如果订单存在，则根据订单信息获取商品信息
         long goodsId = order.getGoodsId();
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);

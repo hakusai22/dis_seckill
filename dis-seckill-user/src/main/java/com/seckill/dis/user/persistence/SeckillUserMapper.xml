@@ -17,6 +17,9 @@
         <result property="email" column="email"/>
         <result property="address" column="address"/>
     </resultMap>
+<!--    <delete id="deleteUser">-->
+<!--        de-->
+<!--    </delete>-->
 
     <select id="getUserByPhone" parameterType="java.lang.Long" resultType="com.seckill.dis.user.domain.SeckillUser">
         SELECT *
@@ -38,8 +41,8 @@
         WHERE phone = #{phone}
     </select>
 
-    <select id="updateLoginCount" parameterType="java.lang.Long" >
-       UPDATE seckill_user set login_count=login_count+1,set last_login_date=#{date} where phone=#{phone}
+    <select id="updateLoginCount">
+       UPDATE seckill_user u set u.login_count=u.login_count+1, u.last_login_date=#{date} where phone=#{phone}
     </select>
 
     <select id="getAllUserInfo"  resultMap="seckillUser">

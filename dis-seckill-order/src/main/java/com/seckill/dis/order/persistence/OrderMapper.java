@@ -28,14 +28,14 @@ public interface OrderMapper {
     @Insert("INSERT INTO order_info (id,user_id, goods_id, goods_name, goods_count, goods_price, order_channel, status, create_date, delivery_addr_id)"
             + "VALUES (#{id},#{userId}, #{goodsId}, #{goodsName}, #{goodsCount}, #{goodsPrice}, #{orderChannel}, #{status}, #{createDate},#{deliveryAddrId})")
     // 查询出插入订单信息的表id，并返回
-    @SelectKey(keyColumn = "id", keyProperty = "id", resultType = long.class, before = false, statement = "SELECT last_insert_id()")
+//    @SelectKey(keyColumn = "id", keyProperty = "id", resultType = long.class, before = false, statement = "SELECT last_insert_id()")
     long insert(OrderInfo orderInfo);
 
     /**
      * 将秒杀订单信息插入到 seckill_order 中
      * @param seckillOrder 秒杀订单
      */
-    @Insert("INSERT INTO seckill_order(user_id, order_id, goods_id) VALUES (#{userId}, #{orderId}, #{goodsId})")
+    @Insert("INSERT INTO seckill_order(id,user_id, order_id, goods_id,create_time) VALUES (#{id},#{userId}, #{orderId}, #{goodsId}, #{createTime})")
     void insertSeckillOrder(SeckillOrder seckillOrder);
 
     /**

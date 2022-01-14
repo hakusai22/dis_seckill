@@ -32,7 +32,7 @@ public interface SeckillUserMapper {
     /**
      * 更新用户登录的次数
      */
-    void updateLoginCount(Long phone, Date date);
+    void updateLoginCount(@Param("phone")Long phone, @Param("date") Date date);
 
 
     /**
@@ -48,4 +48,7 @@ public interface SeckillUserMapper {
      * @return
      */
     long findPhone(long phone);
+
+    @Delete("delete from seckill_user WHERE uuid=#{uuid}")
+    void deleteUser(@Param("uuid")long uuid);
 }

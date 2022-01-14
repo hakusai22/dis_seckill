@@ -42,7 +42,7 @@
         <tr>
             <td><b style="font-size: medium">用户ID</b></td>
             <td><b style="font-size: medium">用户名称</b></td>
-            <td><b style="font-size: medium">用户Iphone</b></td>
+            <td><b style="font-size: medium">用户手机号</b></td>
             <td><b style="font-size: medium">注册的时间</b></td>
             <td><b style="font-size: medium">上次登录的时间</b></td>
             <td style="color: crimson"><b style="font-size: medium">登录次数</b></td>
@@ -56,13 +56,8 @@
             <td th:text="${user.lastLoginDateString}" style="color: crimson"></td>
             <td th:text="${user.loginCount}" style="color: crimson"></td>
             <td>
-                <a th:href="'/goods_detail.htm?goodsId='+${user.uuid}">
+                <a th:href="'/user/deleteUser?uuid='+${user.uuid}">
                     <button class="btn btn-primary" type="button" id="buyButton">删除</button>
-                </a>
-            </td>
-            <td>
-                <a th:href="'/goods_detail.htm?goodsId='+${user.uuid}">
-                    <button class="btn btn-primary" type="button" id="buyButton">修改</button>
                 </a>
             </td>
 

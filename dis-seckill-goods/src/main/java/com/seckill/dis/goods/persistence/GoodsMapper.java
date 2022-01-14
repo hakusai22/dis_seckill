@@ -42,6 +42,7 @@ public interface GoodsMapper {
     @Update("UPDATE seckill_goods SET end_date =#{endDate} WHERE goods_id=#{goodsId}")
     int updateGoods(@Param("goodsId") Long goodsId,@Param("endDate") Date endDate);
 
+    @Insert("INSERT INTO seckill_goods (goods_id, seckill_price, stock_count, start_date, end_date) VALUES (#{goodsId}, #{seckillPrice}, #{stockCount}, #{startDate}, #{endDate})")
     long insert(InsertGoodsDTO insertGoodsDTO);
 
 }

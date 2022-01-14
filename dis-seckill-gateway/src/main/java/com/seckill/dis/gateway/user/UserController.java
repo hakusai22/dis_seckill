@@ -2,6 +2,7 @@ package com.seckill.dis.gateway.user;
 
 import com.seckill.dis.common.api.cache.vo.GoodsKeyPrefix;
 import com.seckill.dis.common.api.cache.vo.SkUserKeyPrefix;
+import com.seckill.dis.common.api.goods.vo.GoodsVo;
 import com.seckill.dis.common.api.seckill.SeckillServiceApi;
 import com.seckill.dis.common.api.user.UserServiceApi;
 import com.seckill.dis.common.api.user.vo.LoginVo;
@@ -20,9 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
@@ -30,6 +29,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -61,7 +61,7 @@ public class UserController {
     @LogAnnotation(module = "用户登录接口",operation = "用户登录接口")
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
-    public Result<String> login(HttpServletResponse response, @Valid LoginVo loginVo) {
+    public Result<String> login(HttpServletResponse response, @Valid LoginVo loginVo) throws ParseException {
         String token = userService.login(loginVo);
         userService.updateLoginCount(Long.valueOf(loginVo.getMobile()));
         logger.info("token: " + token);
@@ -121,6 +121,21 @@ public class UserController {
     @RequestMapping(value = "getAllUser", method = RequestMethod.GET)
     @ResponseBody
     public String getAllUser(HttpServletRequest request, HttpServletResponse response, Model model) {
+        List<SeckillUser> usersList = userService.getAllUserInfo();
+        model.addAttribute("usersList", usersList);
+        // 3. 渲染html
+        WebContext webContext = new WebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap());
+        // (第一个参数为渲染的html文件名，第二个为web上下文：里面封装了web应用的上下文)
+        String html = thymeleafViewResolver.getTemplateEngine().process("userInfo_list", webContext);
+        return html;
+    }
+
+
+    @GetMapping(value = "deleteUser")
+    @ResponseBody
+    public String deleteUser(@RequestParam("uuid") long uuid, Model model, HttpServletResponse response, HttpServletRequest request, UserVo user) throws ParseException {
+        userService.deleteUser(uuid);
+
         List<SeckillUser> usersList = userService.getAllUserInfo();
         model.addAttribute("usersList", usersList);
         // 3. 渲染html

@@ -30,7 +30,6 @@ public interface OrderServiceApi {
     /**
      * 创建订单
      * @param userId
-     * @param goodsId
      */
     OrderInfo createOrder(Long userId, Long goodsdId);
 

@@ -9,6 +9,7 @@ import com.seckill.dis.common.result.CodeMsg;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public interface UserServiceApi {
     /**
      * 更新登录的次数和登录的时间
      */
-    void updateLoginCount(Long phone);
+    void updateLoginCount(Long phone) throws ParseException;
 
     /**
      * 注册
@@ -72,4 +73,6 @@ public interface UserServiceApi {
      * @param phone
      */
     UserVo getUserByPhone(long phone);
+
+    void deleteUser(long uuid);
 }

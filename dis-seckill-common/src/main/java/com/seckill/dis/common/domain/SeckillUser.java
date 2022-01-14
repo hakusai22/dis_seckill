@@ -1,6 +1,8 @@
 package com.seckill.dis.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,5 +40,14 @@ public class SeckillUser implements Serializable{
     private String registerDateString;
 
     private String lastLoginDateString;
+
+    @JsonSerialize(using = ToStringSerializer.class)
+    public Long getId() {
+        return uuid;
+    }
+
+    public void setId(Long uuid) {
+        this.uuid = uuid;
+    }
 }
 

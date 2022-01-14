@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserServiceApi {
     private DLockApi dLock;
 
     @Override
-    public void updateLoginCount(Long phone) {
+    public void updateLoginCount(Long phone)  {
         userMapper.updateLoginCount(phone,new Date());
     }
 
@@ -242,6 +243,11 @@ public class UserServiceImpl implements UserServiceApi {
             projectInfoVO1.setRegisterDateString(sdf.format(projectInfoVO1.getRegisterDate()));
         });
         return projectInfoVO;
+    }
+
+    @Override
+    public void deleteUser(long uuid) {
+        userMapper.deleteUser(uuid);
     }
 
     @Override

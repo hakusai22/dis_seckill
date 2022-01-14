@@ -40,4 +40,9 @@ public class UserVo implements Serializable {
     private Date lastLoginDate;
 
     private Integer loginCount;
+
+    private String email;
+
+    private String address;
+
 }

@@ -45,8 +45,7 @@
         <div class="row">
             <label class="form-label col-md-4">商品ID</label>
             <div class="col-md-5">
-                <input id="goodsId" name="goodsId" class="form-control" type="text" placeholder="商品ID" required="true"
-                       minlength="11" maxlength="11"/>
+                <input id="goodsId" name="goodsId" class="form-control" type="text" placeholder="商品ID" required="true"/>
             </div>
             <div class="col-md-1">
             </div>
@@ -110,7 +109,6 @@
 
         // 异步发出登录请求
         $.ajax({
-            // url: "/user/register",// 请求的资源
             url: "/goods/insertGoods",// 请求的资源
             type: "POST",
             /*post请求体中的数据*/
@@ -126,7 +124,7 @@
                 layer.closeAll();
                 if (data.code == 0) {
                     layer.msg("添加商品成功");
-                    window.location.href = "/";
+                    window.location.href = "/goods/aminGoodsList";
                 } else {
                     layer.msg(data.msg);
                 }
