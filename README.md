@@ -6,4 +6,12 @@
 ### 用户界面
 ![用户界面](imageimage.png)
 
+### 商品详细页面
+
 ![商品详细页面](imagesimage2.png)
+
+### 秒杀成功页面
+![秒杀成功](imagesimage3.png)
+
+### 订单详细页面
+![订单详细页面](imagesimage4.png)
