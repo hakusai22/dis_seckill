@@ -40,18 +40,18 @@ public class Alipay {
         alipayRequest.setReturnUrl(returnUrl);
         // 服务器异步通知页面路径
         alipayRequest.setNotifyUrl(notifyUrl);
-        AlipayTradePagePayModel model = new AlipayTradePagePayModel();
-        model.setOutTradeNo("20150320010112312323");
-        model.setProductCode("FAST_INSTANT_TRADE_PAY");
-        model.setSubject("Iphone6 16G");
-        model.setTotalAmount("0.01");
+//        AlipayTradePagePayModel model = new AlipayTradePagePayModel();
+//        model.setOutTradeNo("20150320010112312323");
+//        model.setProductCode("FAST_INSTANT_TRADE_PAY");
+//        model.setSubject("Iphone6 16G");
+//        model.setTotalAmount("0.01");
         //以上四个为必选内容。ProductCode是写死的，订单号这些可以自己生成
         //model.setTimeoutExpress("30m");
-        alipayRequest.setReturnUrl("https://www.xizizzz.top/");//据说是支付成功后返回的页面
-        alipayRequest.setNotifyUrl("https://www.xizizzz.top/");//回调的页面，可以用来执行支付成功后的接口调用什么的
-        alipayRequest.setBizModel(model);
+//        alipayRequest.setReturnUrl("https://www.xizizzz.top/");//据说是支付成功后返回的页面
+//        alipayRequest.setNotifyUrl("https://www.xizizzz.top/");//回调的页面，可以用来执行支付成功后的接口调用什么的
+//        alipayRequest.setBizModel(model);
         // 封装参数
-//        alipayRequest.setBizContent(JSON.toJSONString(alipayBean));
+        alipayRequest.setBizContent(JSON.toJSONString(alipayBean));
         // 3、请求支付宝进行付款，并获取支付结果
         String result = alipayClient.pageExecute(alipayRequest).getBody();
         // 返回付款信息
