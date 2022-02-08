@@ -26,6 +26,11 @@
 
 <div class="panel panel-default">
     <div class="panel-heading"><h1>秒杀订单详情</h1></div>
+    <form id="form" action="order1/alipay" method="post">
+        <input type="text" name="outTradeNo" id="outTradeNo"  hidden="hidden"><br>
+        <input type="text" name="subject" id="subject" hidden="hidden"><br>
+        <input type="text" name="totalAmount" id="totalAmount" hidden="hidden"><br>
+        <input type="text" name="body" id="body" hidden="hidden"><br>
     <table class="table" id="goodslist">
         <tr>
             <td>商品名称</td>
@@ -48,7 +53,7 @@
             <td id="orderStatus">
             </td>
             <td>
-                <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+                <input class="btn btn-primary btn-block" type="submit" id="payButton" onclick="submitForm('order1/alipay')">立即支付</input>
             </td>
         </tr>
         <tr>
@@ -64,6 +69,7 @@
             <td colspan="2">江西省南昌市南昌工学院998号</td>
         </tr>
     </table>
+    </form>
 </div>
 
 
@@ -72,6 +78,13 @@
 </html>
 
 <script>
+
+    function submitForm(action) {
+        document.getElementById("form").action = action
+        document.getElementById("form").submit()
+    }
+
+
     // 这个函数在跳转到这个页面时立即执行
     $(function () {
         getOrderDetail();
@@ -109,6 +122,11 @@
         $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
         $("#username").text(user.nickname);
         $("#phone").text(user.phone);
+
+        $("#body").attr("value", goods.goodsName);
+        $("#subject").attr("value", goods.goodsName);
+        $("#totalAmount").attr("value", order.goodsPrice);
+        $("#outTradeNo").attr("value", "123456789");
         var status = "";
         if (order.status == 0) {
             status = "未支付"
