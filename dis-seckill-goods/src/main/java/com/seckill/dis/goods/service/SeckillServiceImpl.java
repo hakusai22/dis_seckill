@@ -65,7 +65,7 @@ public class SeckillServiceImpl implements SeckillServiceApi {
         // 商品ID加分布式锁
         String uniqueValue = UUIDUtil.uuid() + "-" + Thread.currentThread().getId();
         String lockKey = "redis-lock" + userId;
-        OrderInfo order=null;
+        OrderInfo order;
         try {
             boolean lock = dLock.lock(lockKey, uniqueValue, 60 * 1000);
             if (!lock) throw new GlobalException(CodeMsg.SessionLock);

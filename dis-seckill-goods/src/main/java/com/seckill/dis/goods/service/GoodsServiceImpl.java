@@ -52,7 +52,6 @@ public class GoodsServiceImpl implements GoodsServiceApi {
     @Override
     public void reduceStock(long goodsId) {
         goodsMapper.reduceStack(goodsId);
-        
     }
 
     @Override
