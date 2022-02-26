@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisClusterConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisCommands;
+import redis.clients.jedis.*;
+import redis.clients.util.JedisClusterCRC16;
 
 import java.io.Serializable;
 import java.util.*;
@@ -591,8 +591,7 @@ public class RedisUtil extends AbstractDistributedLock {
     }
 
     /**
-     * 模糊匹配删除
-     *
+     * 模糊匹配删除 key* 出现线程阻塞
      * @param pattern
      */
     public void matchDel(String pattern) {
@@ -600,6 +599,89 @@ public class RedisUtil extends AbstractDistributedLock {
         if (keys != null && keys.size() > 0) {
             keys.forEach(k -> redisTemplate.delete(k));
         }
+    }
+
+    /**
+     * 模糊匹配删除
+     * @param matchKey 模糊key
+     */
+    public void matchDelByScan(String matchKey) {
+        Set<String> keys = scanKeys(matchKey);
+        if (keys != null && keys.size() > 0) {
+            keys.forEach(k -> redisTemplate.delete(k));
+        }
+    }
+
+    /**
+     * 通过scan扫描redis集群所有节点,模糊匹配key
+     * @param matchKey 模糊key
+     * @return
+     */
+    public Set<String> scanKeys(String matchKey) {
+        Set<String> set = new HashSet<>();
+        RedisClusterConnection redisClusterConnection = Objects.requireNonNull(redisTemplate.getConnectionFactory()).getClusterConnection();
+        // 获取jedisPool
+        Map<String, JedisPool> clusterNodes = ((JedisCluster) redisClusterConnection.getNativeConnection()).getClusterNodes();
+        for (Map.Entry<String, JedisPool> entry : clusterNodes.entrySet()) {
+            // 获取单个的jedis对象
+            Jedis jedis = null;
+            try {
+                jedis = entry.getValue().getResource();
+                // 判断非从节点(因为若主从复制，从节点会跟随主节点的变化而变化)，此处要使用主节点从主节点获取数据
+                if (!jedis.info("replication").contains("role:slave")) {
+                    List<String> keys = getScan(jedis, matchKey + "*");
+                    if (keys.size() > 0) {
+                        Map<Integer, List<String>> map = new HashMap<>(8);
+                        //接下来的循环不是多余的，需要注意
+                        for (String key : keys) {
+                            // cluster模式执行多key操作的时候，这些key必须在同一个slot上，不然会报:JedisDataException:
+                            int slot = JedisClusterCRC16.getSlot(key);
+                            // 按slot将key分组，相同slot的key一起提交
+                            if (map.containsKey(slot)) {
+                                map.get(slot).add(key);
+                            } else {
+                                List<String> list = new ArrayList<>();
+                                list.add(key);
+                                map.put(slot, list);
+                            }
+                        }
+                        for (Map.Entry<Integer, List<String>> integerListEntry : map.entrySet()) {
+                            set.addAll(integerListEntry.getValue());
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("模糊扫描redis失败",e);
+            } finally {
+                if (null != jedis){
+                    jedis.close();
+                }
+            }
+        }
+        return set;
+    }
+
+    /**
+     * scan获取单redis节点key*
+     * @param jedis  Jedis
+     * @param matchKey 模糊匹配key
+     * @return key结果集
+     */
+    private static List<String> getScan(Jedis jedis, String matchKey) {
+        List<String> list = new ArrayList<>();
+        //扫描的参数对象创建与封装
+        ScanParams params = new ScanParams();
+        params.match(matchKey);
+        //扫描返回10000行
+        params.count(10000);
+        String scanCursorIndex = "0";
+        //scan.getStringCursor() 存在 且不是 0 的时候，一直移动游标获取
+        do {
+            ScanResult<String> scanResult = jedis.scan(scanCursorIndex, params);
+            scanCursorIndex = scanResult.getStringCursor();
+            list.addAll(scanResult.getResult());
+        }while (null != scanCursorIndex && ! "0".equals(scanCursorIndex));
+        return list;
     }
 
 
