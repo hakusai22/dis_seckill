@@ -1,6 +1,8 @@
 package com.seckill.dis.gateway.alipay;
 
 import com.alipay.api.AlipayApiException;
+import com.seckill.dis.common.util.UUIDUtil;
+import com.seckill.dis.gateway.utils.SnowflakeIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +33,7 @@ public class OrderController1 {
     @PostMapping(value = "/alipay")
     public String alipay(String outTradeNo, String subject, String totalAmount, String body) throws AlipayApiException {
         AlipayBean alipayBean = new AlipayBean();
-        alipayBean.setOut_trade_no(outTradeNo);
+        alipayBean.setOut_trade_no(UUIDUtil.uuid());
         alipayBean.setSubject(subject);
         alipayBean.setTotal_amount(totalAmount);
         alipayBean.setBody(body);

@@ -6,9 +6,12 @@ import com.seckill.dis.mq.config.MQConfig;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 
 import java.util.UUID;
 
@@ -38,7 +41,7 @@ public class MqProviderImpl implements MqProviderApi, RabbitTemplate.ConfirmCall
     @Override
     public void sendSkMessage(SkMessage message) {
         logger.info("MQ send message: " + message);
-        // 秒杀消息关联的数据
+        // 秒杀消息关联的数据 UUID
         CorrelationData skCorrData = new CorrelationData(UUID.randomUUID().toString());
         // 第一个参数为消息队列名(此处也为routingKey)，第二个参数为发送的消息
         rabbitTemplate.convertAndSend(MQConfig.SECKILL_QUEUE, message, skCorrData);
@@ -58,5 +61,33 @@ public class MqProviderImpl implements MqProviderApi, RabbitTemplate.ConfirmCall
             logger.info("CallBackConfirm Cause: " + cause);
         }
 
+    }
+
+    @Bean
+    /***
+     * @Description: 绑定correlationId、以及消息持久化
+     * @return: org.springframework.amqp.core.MessagePostProcessor
+     **/
+    public MessagePostProcessor correlationIdProcessor() {
+        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message, Correlation correlation) {
+                MessageProperties messageProperties = message.getMessageProperties();
+                if (correlation instanceof CorrelationData) {
+                    String correlationId = ((CorrelationData) correlation).getId();
+                    messageProperties.setCorrelationId(correlationId);
+                }
+                // 持久化处理
+                messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                return message;
+            }
+            @Override
+            public Message postProcessMessage(Message message) throws AmqpException {
+                MessageProperties messageProperties = message.getMessageProperties();
+                messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                return message;
+            }
+        };
+        return messagePostProcessor;
     }
 }

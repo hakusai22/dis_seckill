@@ -119,7 +119,7 @@ public class GoodsController {
     public String goodsList(HttpServletRequest request, HttpServletResponse response, Model model, UserVo user) throws ParseException {
         logger.info("获取商品列表");
         // 1. 从redis缓存中取html
-        String html = redisService.get(GoodsKeyPrefix.GOODS_LIST_HTML, "", String.class);
+        String html = redisService.get(GoodsKeyPrefix.GOODS_LIST_HTML, "goodsList", String.class);
         if (!StringUtils.isEmpty(html))
             return html;
         // 2. 如果redis中不存在该缓存，则需要手动渲染
@@ -133,7 +133,7 @@ public class GoodsController {
         // (第一个参数为渲染的html文件名，第二个为web上下文：里面封装了web应用的上下文)
         html = thymeleafViewResolver.getTemplateEngine().process("goods_list", webContext);
         if (!StringUtils.isEmpty(html)) // 如果html文件不为空，则将页面缓存在redis中
-            redisService.set(GoodsKeyPrefix.GOODS_LIST_HTML, "", html);
+            redisService.set(GoodsKeyPrefix.GOODS_LIST_HTML, "goodsList", html);
 
         return html;
     }
@@ -142,7 +142,7 @@ public class GoodsController {
     @ResponseBody
     public String aminGoodsList(HttpServletRequest request, HttpServletResponse response, Model model, UserVo user) throws ParseException {
         // 1. 从redis缓存中取html
-        String html = redisService.get(GoodsKeyPrefix.ADMIN_GOODS_LIST_HTML, "", String.class);
+        String html = redisService.get(GoodsKeyPrefix.ADMIN_GOODS_LIST_HTML, "aminGoodsList", String.class);
         if (!StringUtils.isEmpty(html))
             return html;
         // 2. 如果redis中不存在该缓存，则需要手动渲染
@@ -157,7 +157,7 @@ public class GoodsController {
         // (第一个参数为渲染的html文件名，第二个为web上下文：里面封装了web应用的上下文)
         html = thymeleafViewResolver.getTemplateEngine().process("adminGoods_list", webContext);
         if (!StringUtils.isEmpty(html)) // 如果html文件不为空，则将页面缓存在redis中
-            redisService.set(GoodsKeyPrefix.ADMIN_GOODS_LIST_HTML, "", html);
+            redisService.set(GoodsKeyPrefix.ADMIN_GOODS_LIST_HTML, "aminGoodsList", html);
         return html;
     }
 
