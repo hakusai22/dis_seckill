@@ -126,7 +126,7 @@
         $("#body").attr("value", goods.goodsName);
         $("#subject").attr("value", goods.goodsName);
         $("#totalAmount").attr("value", order.goodsPrice);
-        $("#outTradeNo").attr("value", "123456789789");
+        $("#outTradeNo").attr("value", order.id);
         var status = "";
         if (order.status == 0) {
             status = "未支付"

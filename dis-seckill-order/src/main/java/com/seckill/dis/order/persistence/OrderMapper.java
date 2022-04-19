@@ -1,5 +1,8 @@
 package com.seckill.dis.order.persistence;
 
+import java.util.Date;
+import java.util.List;
+
 import com.seckill.dis.common.domain.OrderInfo;
 import com.seckill.dis.common.domain.SeckillOrder;
 import org.apache.ibatis.annotations.*;
@@ -45,4 +48,21 @@ public interface OrderMapper {
      */
     @Select("select * from order_info where id = #{orderId}")
     OrderInfo getOrderById(@Param("orderId") long orderId);
+
+    /**
+     * 更新订单的状态 已支付
+     */
+    @Update("update order_info set status=1 , pay_date= #{pay_date} where id = #{orderId}")
+    void updateOrderById(@Param("orderId") long orderId,@Param("pay_date") Date pay_date);
+
+
+    /**
+     * 获取全部订单信息
+     * @return
+     */
+    @Select("select * from order_info order by id desc")
+    List<OrderInfo> getAllOrder();
+
+    @Delete("delete from order_info where id=#{orderId}")
+    void deletOrder(Long orderId);
 }

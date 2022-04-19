@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单服务实现
@@ -113,4 +114,22 @@ public class OrderServiceImpl implements OrderServiceApi {
     public void saveOrderInfo(String pkid, String orderId, String orderStatus) {
         orderInfoMapper.saveOrderInfo(pkid,orderId,orderStatus);
     }
+
+    @Override
+    public void updateOrderById(long orderId) {
+        Date pay_date = new Date();
+        orderMapper.updateOrderById(orderId,pay_date);
+    }
+
+    @Override
+    public List<OrderInfo> getAllOrder() {
+        return orderMapper.getAllOrder();
+    }
+
+    @Override
+    public void deleteOrder(Long orderId) {
+        orderMapper.deletOrder(orderId);
+    }
+
+
 }

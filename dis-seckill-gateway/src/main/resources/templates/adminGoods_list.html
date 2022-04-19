@@ -48,6 +48,8 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button class="btn btn-primary" type="button"  style="width: 100px;height: 60px;" onclick="to_user()">用户列表</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-primary" type="button"  style="width: 100px;height: 60px;" onclick="to_order_list()">订单列表</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button class="btn btn-primary" type="button"  style="width: 100px;height: 60px;" onclick="to_insertGoods()">添加商品</button></h1>
     </div>
     <div class="panel-title right">
@@ -104,6 +106,10 @@
 <script>
     function to_user() {
         window.location.href = "/user/getAllUser";
+    }
+
+    function to_order_list() {
+        window.location.href = "/order/getAllOrderInfo";
     }
 
     function to_insertGoods() {

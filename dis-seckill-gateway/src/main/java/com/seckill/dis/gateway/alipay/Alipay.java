@@ -6,6 +6,8 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradePagePayModel;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.seckill.dis.common.api.order.OrderServiceApi;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,6 +17,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Alipay {
+
+    @Reference(interfaceClass = OrderServiceApi.class)
+    OrderServiceApi orderService;
     
     /**
      * 支付接口
@@ -54,6 +59,8 @@ public class Alipay {
         alipayRequest.setBizContent(JSON.toJSONString(alipayBean));
         // 3、请求支付宝进行付款，并获取支付结果
         String result = alipayClient.pageExecute(alipayRequest).getBody();
+        System.out.println("getOut_trade_no"+alipayBean.getOut_trade_no());
+        orderService.updateOrderById(Long.parseLong(alipayBean.getOut_trade_no()));
         // 返回付款信息
         return result;
     }

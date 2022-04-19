@@ -1,5 +1,7 @@
 package com.seckill.dis.common.api.order;
 
+import java.util.List;
+
 import com.seckill.dis.common.api.goods.vo.GoodsVo;
 import com.seckill.dis.common.api.user.vo.UserVo;
 import com.seckill.dis.common.domain.OrderInfo;
@@ -39,4 +41,10 @@ public interface OrderServiceApi {
     void updateOrderStatus( String orderId);
 
     void saveOrderInfo( String pkid,  String orderId, String orderStatus);
+
+    void updateOrderById(long orderId);
+
+    List<OrderInfo> getAllOrder();
+
+    void deleteOrder(Long orderId);
 }

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>秒杀用户列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <!-- jquery：用户异步发出请求（注：@为thymeleaf的静态资源引入符） -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap：页面展示 -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- jquery-validator：表单校验 -->
+    <script type="text/javascript" th:src="@{/jquery-validation/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/jquery-validation/localization/messages_zh.min.js}"></script>
+    <!-- layer：弹出窗-->
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <!-- md5.js：计算MD的js脚本-->
+    <script type="text/javascript" th:src="@{/js/md5.min.js}"></script>
+    <!-- common.js：js通用回调函数 -->
+    <script type="text/javascript" th:src="@{/js/common_encode.js}"></script>
+
+    <style type="text/css">
+        html,body{
+            height:100%;
+            width:100%;
+        }
+        body{
+            background:url('/img/bg3.jpg') no-repeat;
+            background-size:100% 100%;
+        }
+        #goodslist td{
+            border-top:1px solid #39503f61;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h1>订单列表</h1></div>
+    <div><input type="button" name="Submit" onclick="javascript:history.back(-1);" value=”返回主页面”></div>
+    <table class="table" id="orderList">
+        <tr>
+            <td><b style="font-size: medium">订单ID</b></td>
+            <td><b style="font-size: medium">用户ID</b></td>
+            <td><b style="font-size: medium">商品名称</b></td>
+            <td><b style="font-size: medium">订单价格</b></td>
+            <td><b style="font-size: medium">订单状态</b></td>
+            <td style="color: crimson"><b style="font-size: medium">支付时间</b></td>
+        </tr>
+
+        <tr th:each="order : ${orderList}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.userId}" style="color: crimson"></td>
+            <td th:text="${order.goodsName}" style="color: crimson"></td>
+            <td th:text="${order.goodsPrice}" style="color: crimson"></td>
+            <div th:switch="${order.status}">
+                <p th:case="0">
+                <td  style="color: crimson">未支付</td>
+                </p>
+                <p th:case="1">
+                <td  style="color: crimson">已支付</td>
+                </p>
+                <p th:case="2">
+                <td  style="color: crimson">已发货</td>
+                </p>
+                <p th:case="3">
+                <td  style="color: crimson">已收获</td>
+                </p>
+                <p th:case="4">
+                <td  style="color: crimson">已退款</td>
+                </p>
+            </div>
+            <td th:text="${order.payDate}" style="color: crimson"></td>
+            <td>
+                <a th:href="'/order/deleteOrder?id='+${order.id}">
+                    <button class="btn btn-primary" type="button" id="buyButton">删除</button>
+                </a>
+            </td>
+
+        </tr>
+    </table>
+</div>
+
+</body>
+
+</html>
