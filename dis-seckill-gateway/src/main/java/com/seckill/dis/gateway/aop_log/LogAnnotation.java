@@ -3,7 +3,7 @@ package com.seckill.dis.gateway.aop_log;
 import java.lang.annotation.*;
 
 /**
- * @author xizizzz
+ * @author hakusai
  * @description: 日志注解
  * @date 2021-7-30下午 08:07
  */
@@ -35,7 +35,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface LogAnnotation {
 
-    String module() default "";
+  String module() default "";
 
-    String operation() default "";
+  String operation() default "";
 }

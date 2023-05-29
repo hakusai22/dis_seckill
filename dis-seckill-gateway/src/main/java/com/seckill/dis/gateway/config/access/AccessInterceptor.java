@@ -23,151 +23,160 @@ import java.io.OutputStream;
 
 /**
  * 用户访问拦截器
- * @author xizizzz
+ *
+ * @author hakusai
  */
 @Service
 public class AccessInterceptor extends HandlerInterceptorAdapter {
 
-    private static Logger logger = LoggerFactory.getLogger(AccessInterceptor.class);
+  private static Logger logger = LoggerFactory.getLogger(AccessInterceptor.class);
 
 
-    @Reference(interfaceClass = RedisServiceApi.class)
-    RedisServiceApi redisService;
+  @Reference(interfaceClass = RedisServiceApi.class)
+  RedisServiceApi redisService;
 
-    /**
-     * 目标方法执行前的处理
-     * 查询访问次数，进行防刷请求拦截
-     * 在 AccessLimit#seconds() 时间内频繁访问会有次数限制
-     * @param request
-     * @param response
-     * @param handler
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-         logger.info(request.getRequestURL() + " 拦截请求");
-        // 指明拦截的是方法
-        if (handler instanceof HandlerMethod) {
-            logger.info("HandlerMethod: " + ((HandlerMethod) handler).getMethod().getName());
-            // 获取用户对象
-            UserVo user = this.getUser(request, response);
-            // 保存用户到ThreadLocal，这样，同一个线程访问的是同一个用户
-            UserContext.setUser(user);
+  /**
+   * 目标方法执行前的处理
+   * 查询访问次数，进行防刷请求拦截
+   * 在 AccessLimit#seconds() 时间内频繁访问会有次数限制
+   *
+   * @param request
+   * @param response
+   * @param handler
+   * @return
+   * @throws Exception
+   */
+  @Override
+  public boolean preHandle(HttpServletRequest request,
+      HttpServletResponse response, Object handler) throws Exception {
+    logger.info(request.getRequestURL() + " 拦截请求");
+    // 指明拦截的是方法
+    if (handler instanceof HandlerMethod) {
+      logger.info("HandlerMethod: " + ((HandlerMethod) handler).getMethod().getName());
+      // 获取用户对象
+      UserVo user = this.getUser(request, response);
+      // 保存用户到ThreadLocal，这样，同一个线程访问的是同一个用户
+      UserContext.setUser(user);
 
-            // 获取标注了 @AccessLimit 的方法，没有注解，则直接返回
-            HandlerMethod hm = (HandlerMethod) handler;
-            AccessLimit accessLimit = hm.getMethodAnnotation(AccessLimit.class);
+      // 获取标注了 @AccessLimit 的方法，没有注解，则直接返回
+      HandlerMethod hm = (HandlerMethod) handler;
+      AccessLimit accessLimit = hm.getMethodAnnotation(AccessLimit.class);
 
-            // 如果没有添加@AccessLimit注解，直接放行（true）
-            if (accessLimit == null)
-                return true;
-
-            // 获取注解的元素值
-            int seconds = accessLimit.seconds();
-            int maxCount = accessLimit.maxAccessCount();
-            boolean needLogin = accessLimit.needLogin();
-
-            String key = request.getRequestURI();
-            if (needLogin) {
-                if (user == null) {
-                    this.render(response, CodeMsg.SESSION_ERROR);
-                    return false;
-                }
-                key += "_" + user.getPhone();
-            } else {
-                //do nothing
-            }
-            // 设置缓存过期时间
-            AccessKeyPrefix accessKeyPrefix = AccessKeyPrefix.withExpire(seconds);
-            // 在redis中存储的访问次数的key为请求的URI
-            Integer count = redisService.get(accessKeyPrefix, key, Integer.class);
-            // 第一次重复点击 秒杀按钮
-            if (count == null) {
-                redisService.set(accessKeyPrefix, key, 1);
-                // 点击次数未达最大值
-            } else if (count < maxCount) {
-                redisService.incr(accessKeyPrefix, key);
-                // 点击次数已满
-            } else {
-                this.render(response, CodeMsg.ACCESS_LIMIT_REACHED);
-                return false;
-            }
-        }
-        // 不是方法直接放行
+      // 如果没有添加@AccessLimit注解，直接放行（true）
+      if (accessLimit == null)
         return true;
-    }
 
-    /**
-     * 渲染返回信息
-     * 以 json 格式返回
-     * @throws Exception
-     */
-    private void render(HttpServletResponse response, CodeMsg cm) throws Exception {
-        response.setContentType("application/json;charset=UTF-8");
-        OutputStream out = response.getOutputStream();
-        String str = JSON.toJSONString(Result.error(cm));
-        out.write(str.getBytes("UTF-8"));
-        out.flush();
-        out.close();
-    }
+      // 获取注解的元素值
+      int seconds = accessLimit.seconds();
+      int maxCount = accessLimit.maxAccessCount();
+      boolean needLogin = accessLimit.needLogin();
 
-    /**
-     * 和 UserArgumentResolver 功能类似，用于解析拦截的请求，获取 UserVo 对象
-     * @param request
-     * @param response
-     * @return UserVo 对象
-     */
-    private UserVo getUser(HttpServletRequest request, HttpServletResponse response) {
-         logger.info(request.getRequestURL() + " 获取 UserVo 对象");
-        // 从请求中获取token
-        String paramToken = request.getParameter(UserServiceApi.COOKIE_NAME_TOKEN);
-        String cookieToken = getCookieValue(request, UserServiceApi.COOKIE_NAME_TOKEN);
-
-        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
-            return null;
+      String key = request.getRequestURI();
+      if (needLogin) {
+        if (user == null) {
+          this.render(response, CodeMsg.SESSION_ERROR);
+          return false;
         }
+        key += "_" + user.getPhone();
+      } else {
+        //do nothing
+      }
+      // 设置缓存过期时间
+      AccessKeyPrefix accessKeyPrefix = AccessKeyPrefix.withExpire(seconds);
+      // 在redis中存储的访问次数的key为请求的URI
+      Integer count = redisService.get(accessKeyPrefix, key, Integer.class);
+      // 第一次重复点击 秒杀按钮
+      if (count == null) {
+        redisService.set(accessKeyPrefix, key, 1);
+        // 点击次数未达最大值
+      } else if (count < maxCount) {
+        redisService.incr(accessKeyPrefix, key);
+        // 点击次数已满
+      } else {
+        this.render(response, CodeMsg.ACCESS_LIMIT_REACHED);
+        return false;
+      }
+    }
+    // 不是方法直接放行
+    return true;
+  }
 
-        String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
-        if (StringUtils.isEmpty(token)) {
-            return null;
-        }
-        UserVo userVo = redisService.get(SkUserKeyPrefix.TOKEN, token, UserVo.class);
-        // 在有效期内从redis获取到key之后，需要将key重新设置一下，从而达到延长有效期的效果
-        if (userVo != null) {
-            addCookie(response, token, userVo);
-        }
-        return userVo;
+  /**
+   * 渲染返回信息
+   * 以 json 格式返回
+   *
+   * @throws Exception
+   */
+  private void render(HttpServletResponse response,
+      CodeMsg cm) throws Exception {
+    response.setContentType("application/json;charset=UTF-8");
+    OutputStream out = response.getOutputStream();
+    String str = JSON.toJSONString(Result.error(cm));
+    out.write(str.getBytes("UTF-8"));
+    out.flush();
+    out.close();
+  }
+
+  /**
+   * 和 UserArgumentResolver 功能类似，用于解析拦截的请求，获取 UserVo 对象
+   *
+   * @param request
+   * @param response
+   * @return UserVo 对象
+   */
+  private UserVo getUser(HttpServletRequest request,
+      HttpServletResponse response) {
+    logger.info(request.getRequestURL() + " 获取 UserVo 对象");
+    // 从请求中获取token
+    String paramToken = request.getParameter(UserServiceApi.COOKIE_NAME_TOKEN);
+    String cookieToken = getCookieValue(request, UserServiceApi.COOKIE_NAME_TOKEN);
+
+    if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
+      return null;
     }
 
-    /**
-     * 从众多的cookie中找出指定cookiName的cookie
-     * @return cookiName对应的value
-     */
-    private String getCookieValue(HttpServletRequest request, String cookieName) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null || cookies.length == 0)
-            return null;
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookieName)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
+    String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
+    if (StringUtils.isEmpty(token)) {
+      return null;
     }
-
-    /**
-     * 将cookie存入redis，并将cookie写入到请求的响应中
-     */
-    private void addCookie(HttpServletResponse response, String token, UserVo user) {
-
-        redisService.set(SkUserKeyPrefix.TOKEN, token, user);
-
-        Cookie cookie = new Cookie(UserServiceApi.COOKIE_NAME_TOKEN, token);
-        // 客户端cookie的有限期和缓存中的cookie有效期一致
-        cookie.setMaxAge(SkUserKeyPrefix.TOKEN.expireSeconds());
-        cookie.setPath("/");
-        response.addCookie(cookie);
+    UserVo userVo = redisService.get(SkUserKeyPrefix.TOKEN, token, UserVo.class);
+    // 在有效期内从redis获取到key之后，需要将key重新设置一下，从而达到延长有效期的效果
+    if (userVo != null) {
+      addCookie(response, token, userVo);
     }
+    return userVo;
+  }
+
+  /**
+   * 从众多的cookie中找出指定cookiName的cookie
+   *
+   * @return cookiName对应的value
+   */
+  private String getCookieValue(HttpServletRequest request, String cookieName) {
+    Cookie[] cookies = request.getCookies();
+    if (cookies == null || cookies.length == 0)
+      return null;
+
+    for (Cookie cookie : cookies) {
+      if (cookie.getName().equals(cookieName)) {
+        return cookie.getValue();
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 将cookie存入redis，并将cookie写入到请求的响应中
+   */
+  private void addCookie(HttpServletResponse response, String token,
+      UserVo user) {
+
+    redisService.set(SkUserKeyPrefix.TOKEN, token, user);
+
+    Cookie cookie = new Cookie(UserServiceApi.COOKIE_NAME_TOKEN, token);
+    // 客户端cookie的有限期和缓存中的cookie有效期一致
+    cookie.setMaxAge(SkUserKeyPrefix.TOKEN.expireSeconds());
+    cookie.setPath("/");
+    response.addCookie(cookie);
+  }
 }

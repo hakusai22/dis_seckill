@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 在MQ中传递的秒杀信息
  * 包含参与秒杀的用户和商品的id
  *
- * @author xizizzz
+ * @author hakusai
  */
 @AllArgsConstructor
 @Data

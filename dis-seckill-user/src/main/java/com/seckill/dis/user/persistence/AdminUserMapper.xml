@@ -12,21 +12,26 @@
         <result property="salt" column="salt"/>
     </resultMap>
 
-    <select id="getUserByPhone" parameterType="java.lang.Long" resultType="com.seckill.dis.user.domain.AdminUser">
+    <select id="getUserByPhone" parameterType="java.lang.Long"
+            resultType="com.seckill.dis.user.domain.AdminUser">
         SELECT *
         FROM admin_user
         WHERE phone = #{phone}
     </select>
 
-    <insert id="insertUser" parameterType="com.seckill.dis.user.domain.AdminUser" useGeneratedKeys="true">
+    <insert id="insertUser"
+            parameterType="com.seckill.dis.user.domain.AdminUser"
+            useGeneratedKeys="true">
         INSERT INTO admin_user (phone, nickname, password, salt)
         VALUES (#{phone}, #{nickname}, #{password}, #{salt})
-        <selectKey keyColumn="UUID" keyProperty="uuid" resultType="java.lang.Long">
+        <selectKey keyColumn="UUID" keyProperty="uuid"
+                   resultType="java.lang.Long">
             SELECT last_insert_id()
         </selectKey>
     </insert>
 
-    <select id="findPhone" parameterType="java.lang.Long" resultType="java.lang.Long">
+    <select id="findPhone" parameterType="java.lang.Long"
+            resultType="java.lang.Long">
         SELECT phone
         FROM admin_user
         WHERE phone = #{phone}

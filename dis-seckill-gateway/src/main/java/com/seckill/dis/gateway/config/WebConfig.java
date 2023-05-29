@@ -15,30 +15,32 @@ import java.util.List;
 
 /**
  * 自定义web配置
- * @author xizizzz
+ *
+ * @author hakusai
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    private static Logger logger = LoggerFactory.getLogger(WebConfig.class);
+  private static Logger logger = LoggerFactory.getLogger(WebConfig.class);
 
-    @Autowired
-    UserArgumentResolver userArgumentResolver;
+  @Autowired
+  UserArgumentResolver userArgumentResolver;
 
-    @Autowired
-    AccessInterceptor accessInterceptor;
+  @Autowired
+  AccessInterceptor accessInterceptor;
 
-    // 添加自定义的参数解析器到MVC配置中
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        logger.info("添加自定义的参数解析器");
-        // 添加自定义的参数解析器
-        argumentResolvers.add(userArgumentResolver);
-    }
+  // 添加自定义的参数解析器到MVC配置中
+  @Override
+  public void addArgumentResolvers(
+      List<HandlerMethodArgumentResolver> argumentResolvers) {
+    logger.info("添加自定义的参数解析器");
+    // 添加自定义的参数解析器
+    argumentResolvers.add(userArgumentResolver);
+  }
 
-    // 添加自定义方法拦截器到MVC配置中
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        logger.info("添加请求拦截器");
-        registry.addInterceptor(accessInterceptor);
-    }
+  // 添加自定义方法拦截器到MVC配置中
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    logger.info("添加请求拦截器");
+    registry.addInterceptor(accessInterceptor);
+  }
 }

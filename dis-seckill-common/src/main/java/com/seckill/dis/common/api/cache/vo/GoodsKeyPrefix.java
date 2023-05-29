@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * redis中，用于商品信息的key
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class GoodsKeyPrefix extends BaseKeyPrefix  implements Serializable {
 

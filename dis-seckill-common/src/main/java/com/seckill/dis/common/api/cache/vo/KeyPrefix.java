@@ -4,7 +4,7 @@ package com.seckill.dis.common.api.cache.vo;
  * redis 键的前缀
  * 之所以在key前面设置一个前缀，是因为如果出现设置相同的key情形，可以通过前缀加以区分
  *
- * @author xizizzz
+ * @author hakusai
  */
 public interface KeyPrefix {
 

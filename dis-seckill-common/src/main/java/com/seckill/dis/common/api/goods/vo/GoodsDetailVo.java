@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 商品详情
  * 用于将数据传递给客户端
- * @author xizizzz
+ * @author hakusai
  */
 @AllArgsConstructor
 @NoArgsConstructor

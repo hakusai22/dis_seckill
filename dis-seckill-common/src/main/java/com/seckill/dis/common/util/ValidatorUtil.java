@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * 手机号码格式校验工具
  *
- * @xizizzz
+ * @hakusai
  */
 public class ValidatorUtil {
 

@@ -4,7 +4,7 @@ import com.seckill.dis.common.api.mq.vo.SkMessage;
 
 /**
  * 消息队列服务
- * @author xizizzz
+ * @author hakusai
  */
 public interface MqProviderApi {
 

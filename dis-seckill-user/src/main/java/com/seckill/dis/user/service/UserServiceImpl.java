@@ -33,151 +33,153 @@ import java.util.Objects;
 @Service(interfaceClass = UserServiceApi.class)
 public class UserServiceImpl implements UserServiceApi {
 
-    private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+  private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Autowired
-    private SeckillUserMapper userMapper;
+  @Autowired
+  private SeckillUserMapper userMapper;
 
-    @Autowired
-    private AdminUserMapper adminUserMapper;
+  @Autowired
+  private AdminUserMapper adminUserMapper;
 
-    // 由于需要将一个cookie对应的用户存入第三方缓存中，这里用redis，所以需要引入redis serice
-    @Reference(interfaceClass = RedisServiceApi.class)
-    private RedisServiceApi redisService;
+  // 由于需要将一个cookie对应的用户存入第三方缓存中，这里用redis，所以需要引入redis serice
+  @Reference(interfaceClass = RedisServiceApi.class)
+  private RedisServiceApi redisService;
 
-    @Reference(interfaceClass = DLockApi.class)
-    private DLockApi dLock;
+  @Reference(interfaceClass = DLockApi.class)
+  private DLockApi dLock;
 
-    @Override
-    public void updateLoginCount(Long phone)  {
-        userMapper.updateLoginCount(phone,new Date());
+  @Override
+  public void updateLoginCount(Long phone) {
+    userMapper.updateLoginCount(phone, new Date());
+  }
+
+  /**
+   * 注册用户
+   *
+   * @param userModel 用户vo
+   * @return 状态码
+   */
+  @Override
+  public CodeMsg register(RegisterVo userModel) {
+    // 对用户的手机号进行加分布式锁
+    String uniqueValue = UUIDUtil.uuid() + "-" + Thread.currentThread().getId();
+    String lockKey = "redis-lock" + userModel.getPhone();
+    boolean lock = dLock.lock(lockKey, uniqueValue, 60 * 1000);
+    if (!lock)
+      return CodeMsg.WAIT_REGISTER_DONE;
+    logger.debug("注册接口加锁成功");
+
+    // 检查用户是否注册
+    SeckillUser user = this.getSeckillUserByPhone(userModel.getPhone());
+
+    // 用户已经注册
+    if (user != null) {
+      dLock.unlock(lockKey, uniqueValue);
+      return CodeMsg.USER_EXIST;
     }
 
-    /**
-     * 注册用户
-     * @param userModel 用户vo
-     * @return 状态码
-     */
-    @Override
-    public CodeMsg register(RegisterVo userModel) {
-        // 对用户的手机号进行加分布式锁
-        String uniqueValue = UUIDUtil.uuid() + "-" + Thread.currentThread().getId();
-        String lockKey = "redis-lock" + userModel.getPhone();
-        boolean lock = dLock.lock(lockKey, uniqueValue, 60 * 1000);
-        if (!lock)
-            return CodeMsg.WAIT_REGISTER_DONE;
-        logger.debug("注册接口加锁成功");
+    // 生成skuser对象
+    SeckillUser newUser = new SeckillUser();
+    newUser.setPhone(userModel.getPhone());
+    newUser.setNickname(userModel.getNickname());
+    newUser.setHead(userModel.getHead());
+    newUser.setSalt(MD5Util.SALT);
+    newUser.setEmail(user.getEmail());
+    newUser.setAddress(user.getAddress());
+    String dbPass = MD5Util.formPassToDbPass(userModel.getPassword(), MD5Util.SALT);
+    newUser.setPassword(dbPass);
+    Date date = new Date(System.currentTimeMillis());
+    newUser.setRegisterDate(date);
 
-        // 检查用户是否注册
-        SeckillUser user = this.getSeckillUserByPhone(userModel.getPhone());
+    // 写入数据库
+    long id = userMapper.insertUser(newUser);
 
-        // 用户已经注册
-        if (user != null) {
-            dLock.unlock(lockKey, uniqueValue);
-            return CodeMsg.USER_EXIST;
-        }
+    boolean unlock = dLock.unlock(lockKey, uniqueValue);
+    if (!unlock) return CodeMsg.REGISTER_FAIL;
+    logger.debug("注册接口解锁成功");
 
-        // 生成skuser对象
-        SeckillUser newUser = new SeckillUser();
-        newUser.setPhone(userModel.getPhone());
-        newUser.setNickname(userModel.getNickname());
-        newUser.setHead(userModel.getHead());
-        newUser.setSalt(MD5Util.SALT);
-        newUser.setEmail(user.getEmail());
-        newUser.setAddress(user.getAddress());
-        String dbPass = MD5Util.formPassToDbPass(userModel.getPassword(), MD5Util.SALT);
-        newUser.setPassword(dbPass);
-        Date date = new Date(System.currentTimeMillis());
-        newUser.setRegisterDate(date);
+    // 用户注册成功
+    if (id > 0) return CodeMsg.SUCCESS;
+    // 用户注册失败
+    return CodeMsg.REGISTER_FAIL;
+  }
 
-        // 写入数据库
-        long id = userMapper.insertUser(newUser);
+  /**
+   * 用户登录, 要么处理成功返回true，否则会抛出全局异常
+   * 抛出的异常信息会被全局异常接收，全局异常会将异常信息传递到全局异常处理器
+   *
+   * @param loginVo 封装了客户端请求传递过来的数据（即账号密码）
+   *                （使用post方式，请求参数放在了请求体中，这个参数就是获取请求体中的数据）
+   * @return 用户token
+   */
+  @Override
+  public String login(@Valid LoginVo loginVo) {
+    logger.info(loginVo.toString());
 
-        boolean unlock = dLock.unlock(lockKey, uniqueValue);
-        if (!unlock)  return CodeMsg.REGISTER_FAIL;
-        logger.debug("注册接口解锁成功");
+    // 获取用户提交的手机号码和密码
+    String mobile = loginVo.getMobile();
+    String password = loginVo.getPassword();
 
-        // 用户注册成功
-        if (id > 0) return CodeMsg.SUCCESS;
-        // 用户注册失败
-        return CodeMsg.REGISTER_FAIL;
+    SeckillUser user1 = userMapper.getUserByPhone(Long.parseLong(mobile));
+    if (Objects.isNull(user1)) {
+      throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
     }
+    // 判断手机号是否存在(首先从缓存中取，再从数据库取)
+    SeckillUser user = this.getSeckillUserByPhone(Long.parseLong(mobile));
+    // 缓存中、数据库中都不存在该用户信息，直接返回
+    if (Objects.isNull(user))
+      throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+    logger.info("用户：" + user.toString());
 
-    /**
-     * 用户登录, 要么处理成功返回true，否则会抛出全局异常
-     * 抛出的异常信息会被全局异常接收，全局异常会将异常信息传递到全局异常处理器
-     * @param loginVo 封装了客户端请求传递过来的数据（即账号密码）
-     *                （使用post方式，请求参数放在了请求体中，这个参数就是获取请求体中的数据）
-     * @return 用户token
-     */
-    @Override
-    public String login(@Valid LoginVo loginVo) {
-        logger.info(loginVo.toString());
+    // 判断手机号对应的密码是否一致
+    String dbPassword = user.getPassword();
+    String dbSalt = user.getSalt();
+    String calcPass = MD5Util.formPassToDbPass(password, dbSalt);
+    if (!calcPass.equals(dbPassword))
+      throw new GlobalException(CodeMsg.PASSWORD_ERROR);
 
-        // 获取用户提交的手机号码和密码
-        String mobile = loginVo.getMobile();
-        String password = loginVo.getPassword();
+    // 执行到这里表明登录成功，更新用户cookie
+    // 生成cookie
+    String token = UUIDUtil.uuid();
+    // 每次访问都会生成一个新的session存储于redis和反馈给客户端，一个session对应存储一个user对象
+    redisService.set(SkUserKeyPrefix.TOKEN, token, user);
+    return token;
+  }
 
-        SeckillUser user1 = userMapper.getUserByPhone(Long.parseLong(mobile));
-        if(Objects.isNull(user1)) {
-            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
-        }
-        // 判断手机号是否存在(首先从缓存中取，再从数据库取)
-        SeckillUser user = this.getSeckillUserByPhone(Long.parseLong(mobile));
-        // 缓存中、数据库中都不存在该用户信息，直接返回
-        if (Objects.isNull(user))
-            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
-        logger.info("用户：" + user.toString());
+  @Override
+  public String adminLogin(LoginVo loginVo) {
+    logger.info(loginVo.toString());
+    // 获取用户提交的手机号码和密码
+    String mobile = loginVo.getMobile();
+    String password = loginVo.getPassword();
 
-        // 判断手机号对应的密码是否一致
-        String dbPassword = user.getPassword();
-        String dbSalt = user.getSalt();
-        String calcPass = MD5Util.formPassToDbPass(password, dbSalt);
-        if (!calcPass.equals(dbPassword))
-            throw new GlobalException(CodeMsg.PASSWORD_ERROR);
+    // 判断手机号是否存在(首先从缓存中取，再从数据库取)
+    AdminUser user = this.getAdminUserByPhone(Long.parseLong(mobile));
+    // 缓存中、数据库中都不存在该用户信息，直接返回
+    if (Objects.isNull(user))
+      throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+    logger.info("用户：" + user);
 
-        // 执行到这里表明登录成功，更新用户cookie
-        // 生成cookie
-        String token = UUIDUtil.uuid();
-        // 每次访问都会生成一个新的session存储于redis和反馈给客户端，一个session对应存储一个user对象
-        redisService.set(SkUserKeyPrefix.TOKEN, token, user);
-        return token;
-    }
+    // 判断手机号对应的密码是否一致
+    String dbPassword = user.getPassword();
+    String dbSalt = user.getSalt();
+    String calcPass = MD5Util.formPassToDbPass(password, dbSalt);
+    if (!calcPass.equals(dbPassword))
+      throw new GlobalException(CodeMsg.PASSWORD_ERROR);
 
-    @Override
-    public String adminLogin(LoginVo loginVo) {
-        logger.info(loginVo.toString());
-        // 获取用户提交的手机号码和密码
-        String mobile = loginVo.getMobile();
-        String password = loginVo.getPassword();
+    // 执行到这里表明登录成功，更新用户cookie
+    // 生成cookie
+    String token = UUIDUtil.uuid();
+    // 每次访问都会生成一个新的session存储于redis和反馈给客户端，一个session对应存储一个user对象
+    redisService.set(SkUserKeyPrefix.ADMIN_TOKEN, token, user);
+    return token;
+  }
 
-        // 判断手机号是否存在(首先从缓存中取，再从数据库取)
-        AdminUser user = this.getAdminUserByPhone(Long.parseLong(mobile));
-        // 缓存中、数据库中都不存在该用户信息，直接返回
-        if (Objects.isNull(user))
-            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
-        logger.info("用户：" + user);
-
-        // 判断手机号对应的密码是否一致
-        String dbPassword = user.getPassword();
-        String dbSalt = user.getSalt();
-        String calcPass = MD5Util.formPassToDbPass(password, dbSalt);
-        if (!calcPass.equals(dbPassword))
-            throw new GlobalException(CodeMsg.PASSWORD_ERROR);
-
-        // 执行到这里表明登录成功，更新用户cookie
-        // 生成cookie
-        String token = UUIDUtil.uuid();
-        // 每次访问都会生成一个新的session存储于redis和反馈给客户端，一个session对应存储一个user对象
-        redisService.set(SkUserKeyPrefix.ADMIN_TOKEN, token, user);
-        return token;
-    }
-
-    @Override
-    public UserVo getUserByPhone(long phone) {
-        UserVo userVo = new UserVo();
-        SeckillUser user = userMapper.getUserByPhone(phone);
-        userVo.setUuid(user.getUuid())
+  @Override
+  public UserVo getUserByPhone(long phone) {
+    UserVo userVo = new UserVo();
+    SeckillUser user = userMapper.getUserByPhone(phone);
+    userVo.setUuid(user.getUuid())
         .setSalt(user.getSalt())
         .setRegisterDate(user.getRegisterDate())
         .setPassword(user.getPassword())
@@ -185,73 +187,74 @@ public class UserServiceImpl implements UserServiceApi {
         .setLoginCount(user.getLoginCount())
         .setLastLoginDate(user.getLastLoginDate())
         .setHead(user.getHead());
-        return userVo;
-    }
+    return userVo;
+  }
 
-    /**
-     * 根据 phone 查询秒杀用户信息
-     * 对象级缓存
-     * 从缓存中查询 SeckillUser 对象，如果 SeckillUser 在缓存中存在，则直接返回，否则从数据库返回
-     * @param phone 用户手机号码
-     * @return SeckillUser
-     */
-    private SeckillUser getSeckillUserByPhone(long phone) {
-        // 1. 从redis中获取用户数据缓存
-        SeckillUser user = redisService.get(SkUserKeyPrefix.SK_USER_PHONE, "_" + phone, SeckillUser.class);
-        if (user != null)
-            return user;
-        // 2. 如果缓存中没有用户数据，则从数据库中查询数据并将数据写入缓存
-        // 先从数据库中取出数据
-        user = userMapper.getUserByPhone(phone);
-        // 然后将数据返回并将数据缓存在redis中
-        if (user != null)
-            redisService.set(SkUserKeyPrefix.SK_USER_PHONE, "_" + phone, user);
-        return user;
-    }
+  /**
+   * 根据 phone 查询秒杀用户信息
+   * 对象级缓存
+   * 从缓存中查询 SeckillUser 对象，如果 SeckillUser 在缓存中存在，则直接返回，否则从数据库返回
+   *
+   * @param phone 用户手机号码
+   * @return SeckillUser
+   */
+  private SeckillUser getSeckillUserByPhone(long phone) {
+    // 1. 从redis中获取用户数据缓存
+    SeckillUser user = redisService.get(SkUserKeyPrefix.SK_USER_PHONE, "_" + phone, SeckillUser.class);
+    if (user != null)
+      return user;
+    // 2. 如果缓存中没有用户数据，则从数据库中查询数据并将数据写入缓存
+    // 先从数据库中取出数据
+    user = userMapper.getUserByPhone(phone);
+    // 然后将数据返回并将数据缓存在redis中
+    if (user != null)
+      redisService.set(SkUserKeyPrefix.SK_USER_PHONE, "_" + phone, user);
+    return user;
+  }
 
-    private AdminUser getAdminUserByPhone(long phone) {
-        // 1. 从redis中获取用户数据缓存
-        AdminUser user = redisService.get(SkUserKeyPrefix.ADMIN_USER_PHONE, "_" + phone, AdminUser.class);
-        if (user != null)
-            return user;
-        // 2. 如果缓存中没有用户数据，则从数据库中查询数据并将数据写入缓存
-        // 先从数据库中取出数据
-        user = adminUserMapper.getUserByPhone(phone);
-        // 然后将数据返回并将数据缓存在redis中
-        if (user != null)
-            redisService.set(SkUserKeyPrefix.ADMIN_USER_PHONE, "_" + phone, user);
-        return user;
-    }
+  private AdminUser getAdminUserByPhone(long phone) {
+    // 1. 从redis中获取用户数据缓存
+    AdminUser user = redisService.get(SkUserKeyPrefix.ADMIN_USER_PHONE, "_" + phone, AdminUser.class);
+    if (user != null)
+      return user;
+    // 2. 如果缓存中没有用户数据，则从数据库中查询数据并将数据写入缓存
+    // 先从数据库中取出数据
+    user = adminUserMapper.getUserByPhone(phone);
+    // 然后将数据返回并将数据缓存在redis中
+    if (user != null)
+      redisService.set(SkUserKeyPrefix.ADMIN_USER_PHONE, "_" + phone, user);
+    return user;
+  }
 
-    @Override
-    public boolean checkUsername(String username) {
-        return false;
-    }
+  @Override
+  public boolean checkUsername(String username) {
+    return false;
+  }
 
-    @Override
-    public UserInfoVo getUserInfo(int uuid) {
-        return null;
-    }
+  @Override
+  public UserInfoVo getUserInfo(int uuid) {
+    return null;
+  }
 
-    @Override
-    public List<com.seckill.dis.common.domain.SeckillUser> getAllUserInfo() {
-        List<SeckillUser> allUserInfo = userMapper.getAllUserInfo();
-        List<com.seckill.dis.common.domain.SeckillUser> projectInfoVO= JSON.parseArray(JSON.toJSONString(allUserInfo),com.seckill.dis.common.domain.SeckillUser.class);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        projectInfoVO.forEach(projectInfoVO1->{
-            projectInfoVO1.setLastLoginDateString(sdf.format(projectInfoVO1.getLastLoginDate()));
-            projectInfoVO1.setRegisterDateString(sdf.format(projectInfoVO1.getRegisterDate()));
-        });
-        return projectInfoVO;
-    }
+  @Override
+  public List<com.seckill.dis.common.domain.SeckillUser> getAllUserInfo() {
+    List<SeckillUser> allUserInfo = userMapper.getAllUserInfo();
+    List<com.seckill.dis.common.domain.SeckillUser> projectInfoVO = JSON.parseArray(JSON.toJSONString(allUserInfo), com.seckill.dis.common.domain.SeckillUser.class);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    projectInfoVO.forEach(projectInfoVO1 -> {
+      projectInfoVO1.setLastLoginDateString(sdf.format(projectInfoVO1.getLastLoginDate()));
+      projectInfoVO1.setRegisterDateString(sdf.format(projectInfoVO1.getRegisterDate()));
+    });
+    return projectInfoVO;
+  }
 
-    @Override
-    public void deleteUser(long uuid) {
-        userMapper.deleteUser(uuid);
-    }
+  @Override
+  public void deleteUser(long uuid) {
+    userMapper.deleteUser(uuid);
+  }
 
-    @Override
-    public UserInfoVo updateUserInfo(UserInfoVo userInfoVo) {
-        return null;
-    }
+  @Override
+  public UserInfoVo updateUserInfo(UserInfoVo userInfoVo) {
+    return null;
+  }
 }

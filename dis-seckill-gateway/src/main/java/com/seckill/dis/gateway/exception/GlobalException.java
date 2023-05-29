@@ -5,22 +5,22 @@ import com.seckill.dis.common.result.CodeMsg;
 /**
  * 全局异常处理器
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class GlobalException extends RuntimeException {
 
-    private CodeMsg codeMsg;
+  private CodeMsg codeMsg;
 
-    /**
-     * 使用构造器接收CodeMsg
-     *
-     * @param codeMsg
-     */
-    public GlobalException(CodeMsg codeMsg) {
-        this.codeMsg = codeMsg;
-    }
+  /**
+   * 使用构造器接收CodeMsg
+   *
+   * @param codeMsg
+   */
+  public GlobalException(CodeMsg codeMsg) {
+    this.codeMsg = codeMsg;
+  }
 
-    public CodeMsg getCodeMsg() {
-        return codeMsg;
-    }
+  public CodeMsg getCodeMsg() {
+    return codeMsg;
+  }
 }

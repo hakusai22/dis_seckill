@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface OrderInfoMapper {
 
-    String findByOrderStatus(@Param("orderId") String orderId);
+  String findByOrderStatus(@Param("orderId") String orderId);
 
-    void updateOrderStatus(@Param("orderId") String orderId);
+  void updateOrderStatus(@Param("orderId") String orderId);
 
-    void saveOrderInfo(@Param("pkid") String pkid, @Param("orderId") String orderId, @Param("orderStatus") String orderStatus);
+  void saveOrderInfo(@Param("pkid") String pkid,
+      @Param("orderId") String orderId,
+      @Param("orderStatus") String orderStatus);
 }
 

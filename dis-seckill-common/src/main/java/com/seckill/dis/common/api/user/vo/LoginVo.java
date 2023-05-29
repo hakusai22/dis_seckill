@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * 用于接收客户端请求中的表单数据
  * 使用JSR303完成参数校验
- * @author xizizzz
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor

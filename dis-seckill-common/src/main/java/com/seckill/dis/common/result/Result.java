@@ -6,7 +6,7 @@ import java.io.Serializable;
  * 用户接口返回结果
  *
  * @param <T> 数据实体类型
- * @author xizizzz
+ * @author hakusai
  */
 public class Result<T> implements Serializable {
 

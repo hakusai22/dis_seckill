@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  * <p>
  * 用于将数据传递给客户端
  *
- * @author xizizzz
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor

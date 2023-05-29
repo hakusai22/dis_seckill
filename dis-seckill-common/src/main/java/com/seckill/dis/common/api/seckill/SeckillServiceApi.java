@@ -6,7 +6,7 @@ import com.seckill.dis.common.domain.OrderInfo;
 
 /**
  * 秒杀服务接口
- * @author xizizzz
+ * @author hakusai
  */
 public interface SeckillServiceApi {
     /**

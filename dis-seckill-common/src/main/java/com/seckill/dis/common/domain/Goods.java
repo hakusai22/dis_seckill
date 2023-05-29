@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * goods 表
- * @author xizizzz
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor

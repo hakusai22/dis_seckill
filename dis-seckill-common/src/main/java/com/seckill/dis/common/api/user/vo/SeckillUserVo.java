@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * 秒杀用户信息
- * @author xizizzz
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor

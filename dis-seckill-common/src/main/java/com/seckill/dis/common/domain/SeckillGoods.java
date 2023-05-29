@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  * seckill_goods
- * @author xizizzz
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor

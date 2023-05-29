@@ -7,10 +7,11 @@ package com.seckill.dis.gateway.utils;
  */
 @FunctionalInterface
 public interface AcquiredLockWorker<T> {
-    /**
-     * 获取锁后处理的逻辑
-     * @return
-     * @throws Exception
-     */
-    T invokeAfterLockAcquire() throws Exception;
+  /**
+   * 获取锁后处理的逻辑
+   *
+   * @return
+   * @throws Exception
+   */
+  T invokeAfterLockAcquire() throws Exception;
 }

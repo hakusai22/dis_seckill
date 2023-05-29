@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * 商品模块
  *
- * @author xizizzz
+ * @author hakusai
  */
 @SpringBootApplication
 public class GoodsApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(GoodsApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(GoodsApplication.class, args);
+  }
 }

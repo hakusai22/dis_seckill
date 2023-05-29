@@ -16,12 +16,12 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminUser  implements Serializable {
-    private Long uuid;
-    private Long phone;
-    private String nickname;
-    private String password;
-    private String salt;
+public class AdminUser implements Serializable {
+  private Long uuid;
+  private Long phone;
+  private String nickname;
+  private String password;
+  private String salt;
 
 }
 

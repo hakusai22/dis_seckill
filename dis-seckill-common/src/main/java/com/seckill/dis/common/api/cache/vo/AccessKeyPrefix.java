@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 访问次数的key前缀
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class AccessKeyPrefix extends BaseKeyPrefix implements Serializable{
     public AccessKeyPrefix(String prefix) {

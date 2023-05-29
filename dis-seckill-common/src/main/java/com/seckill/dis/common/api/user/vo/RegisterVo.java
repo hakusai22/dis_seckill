@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 注册参数
  *
- * @author xizizzz
+ * @author hakusai
  */
 
 @Data

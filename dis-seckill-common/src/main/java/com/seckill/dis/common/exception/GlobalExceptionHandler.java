@@ -17,7 +17,7 @@ import java.util.List;
  * 全局异常处理器（底层使用方法拦截的方式完成，和AOP一样）
  * 在异常发生时，将会调用这里面的方法给客户端一个响应
  *
- * @author xizizzz
+ * @author hakusai
  */
 
 @ControllerAdvice // 通过Advice可知，这个处理器实际上是一个切面

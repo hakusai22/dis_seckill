@@ -2,7 +2,7 @@ package com.seckill.dis.common.api.cache;
 
 /**
  * 分布式锁接口
- * @author xizizzz
+ * @author hakusai
  */
 public interface DLockApi {
     /**

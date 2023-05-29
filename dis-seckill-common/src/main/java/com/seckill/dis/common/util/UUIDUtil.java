@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * UUID工具类用于生成session
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class UUIDUtil {
     public static String uuid() {

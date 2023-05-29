@@ -15,7 +15,7 @@ import java.util.Date;
  * 商品信息和商品的秒杀信息是存储在两个表中的（goods 和 seckill_goods）
  * 继承 Goods 便具有了 goods 表的信息，再额外添加上 seckill_goods 的信息即可
  *
- * @author xizizzz
+ * @author hakusai
  */
 
 @EqualsAndHashCode(callSuper = true)

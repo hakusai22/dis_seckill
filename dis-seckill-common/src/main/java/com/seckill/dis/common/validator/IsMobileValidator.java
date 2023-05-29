@@ -12,7 +12,7 @@ import javax.validation.ConstraintValidatorContext;
  * 真正用户手机号码检验的工具，会被注解@isMobile所使用
  * 这个类需要实现javax.validation.ConstraintValidator，否则不能被@Constraint参数使用
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class IsMobileValidator implements ConstraintValidator<IsMobile, String> {
 

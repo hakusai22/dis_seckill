@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * 数据库连接工具
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class DBUtil {
 

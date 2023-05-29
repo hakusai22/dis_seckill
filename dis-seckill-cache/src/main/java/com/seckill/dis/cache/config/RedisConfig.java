@@ -7,6 +7,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * Copyright (c) 2023
+ * All rights reserved
+ * Author: hakusai22@qq.com
+ */
+
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
@@ -14,12 +20,12 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "redis")
 public class RedisConfig {
 
-    private String host;
-    private int port;
-    private int timeout;//秒
-    private String password;
-    private int poolMaxTotal;
-    private int poolMaxIdle;
-    private int poolMaxWait;//秒
+  private String host;
+  private int port;
+  private int timeout;//秒
+  private String password;
+  private int poolMaxTotal;
+  private int poolMaxIdle;
+  private int poolMaxWait;//秒
 
 }

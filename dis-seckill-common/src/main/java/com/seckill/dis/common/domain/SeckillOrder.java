@@ -13,7 +13,7 @@ import java.util.Date;
 
 /**
  * seckill_order 表
- * @author xizizzz
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor

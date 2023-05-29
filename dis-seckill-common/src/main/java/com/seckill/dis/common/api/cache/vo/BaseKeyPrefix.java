@@ -4,7 +4,7 @@ package com.seckill.dis.common.api.cache.vo;
 /**
  * 模板方法的基本类
  *
- * @author xizizzz
+ * @author hakusai
  */
 public abstract class BaseKeyPrefix implements KeyPrefix {
 

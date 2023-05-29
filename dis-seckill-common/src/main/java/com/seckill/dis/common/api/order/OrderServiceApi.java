@@ -10,7 +10,7 @@ import org.jboss.logging.Param;
 
 /**
  * 订单服务接口
- * @author xizizzz
+ * @author hakusai
  */
 public interface OrderServiceApi {
 

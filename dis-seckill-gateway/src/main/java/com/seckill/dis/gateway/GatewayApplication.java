@@ -7,12 +7,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * 网关服务
  *
- * @author xizizzz
+ * @author hakusai
  */
 @SpringBootApplication
 public class GatewayApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(GatewayApplication.class, args);
+  }
 }

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 存储订单的key前缀
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class OrderKeyPrefix extends BaseKeyPrefix  implements Serializable {
 

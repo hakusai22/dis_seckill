@@ -9,25 +9,26 @@ import java.util.Date;
 
 /**
  * 秒杀用户信息
- * @author xizizzz
+ *
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SeckillUser implements Serializable{
+public class SeckillUser implements Serializable {
 
-    private static final long serialVersionUID = 1338341313176188336L;
+  private static final long serialVersionUID = 1338341313176188336L;
 
-    private Long uuid;
-    private Long phone;
-    private String nickname;
-    private String password;
-    private String salt;
-    private String head;
-    private Date registerDate;
-    private Date lastLoginDate;
-    private Integer loginCount;
-    private String email;
-    private String address;
+  private Long uuid;
+  private Long phone;
+  private String nickname;
+  private String password;
+  private String salt;
+  private String head;
+  private Date registerDate;
+  private Date lastLoginDate;
+  private Integer loginCount;
+  private String email;
+  private String address;
 }
 

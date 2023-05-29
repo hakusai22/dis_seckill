@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 响应结果状态码
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class CodeMsg implements Serializable {
 

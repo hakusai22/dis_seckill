@@ -17,35 +17,45 @@
         <result property="email" column="email"/>
         <result property="address" column="address"/>
     </resultMap>
-<!--    <delete id="deleteUser">-->
-<!--        de-->
-<!--    </delete>-->
+    <!--    <delete id="deleteUser">-->
+    <!--        de-->
+    <!--    </delete>-->
 
-    <select id="getUserByPhone" parameterType="java.lang.Long" resultType="com.seckill.dis.user.domain.SeckillUser">
+    <select id="getUserByPhone" parameterType="java.lang.Long"
+            resultType="com.seckill.dis.user.domain.SeckillUser">
         SELECT *
         FROM seckill_user
         WHERE phone = #{phone}
     </select>
 
-    <insert id="insertUser" parameterType="com.seckill.dis.user.domain.SeckillUser" useGeneratedKeys="true">
-        INSERT INTO seckill_user (phone, nickname, password, salt, head, register_date, last_login_date, login_count,email,address)
-        VALUES (#{phone}, #{nickname}, #{password}, #{salt}, #{head}, #{registerDate}, #{lastLoginDate}, #{loginCount},#{email},#{address})
-        <selectKey keyColumn="UUID" keyProperty="uuid" resultType="java.lang.Long">
+    <insert id="insertUser"
+            parameterType="com.seckill.dis.user.domain.SeckillUser"
+            useGeneratedKeys="true">
+        INSERT INTO seckill_user (phone, nickname, password, salt, head,
+        register_date, last_login_date, login_count,email,address)
+        VALUES (#{phone}, #{nickname}, #{password}, #{salt}, #{head},
+        #{registerDate}, #{lastLoginDate}, #{loginCount},#{email},#{address})
+        <selectKey keyColumn="UUID" keyProperty="uuid"
+                   resultType="java.lang.Long">
             SELECT last_insert_id()
         </selectKey>
     </insert>
 
-    <select id="findPhone" parameterType="java.lang.Long" resultType="java.lang.Long">
+    <select id="findPhone" parameterType="java.lang.Long"
+            resultType="java.lang.Long">
         SELECT phone
         FROM seckill_user
         WHERE phone = #{phone}
     </select>
 
     <select id="updateLoginCount">
-       UPDATE seckill_user u set u.login_count=u.login_count+1, u.last_login_date=#{date} where phone=#{phone}
+        UPDATE seckill_user u
+        set u.login_count=u.login_count + 1,
+            u.last_login_date=#{date}
+        where phone = #{phone}
     </select>
 
-    <select id="getAllUserInfo"  resultMap="seckillUser">
+    <select id="getAllUserInfo" resultMap="seckillUser">
         SELECT *
         FROM seckill_user
     </select>

@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 用户服务接口
- * @author xizizzz
+ * @author hakusai
  */
 public interface UserServiceApi {
 

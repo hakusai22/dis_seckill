@@ -7,14 +7,16 @@ import org.springframework.stereotype.Component;
 
 /**
  * 配置文件监听器，用来加载自定义配置文件
- * @author Louis
- * @date Dec 12, 2018
+ * Copyright (c) 2023
+ * All rights reserved
+ * Author: hakusai22@qq.com
  */
+
 @Component
 public class PropertiesListener implements ApplicationListener<ApplicationStartedEvent> {
 
-    @Override
-    public void onApplicationEvent(ApplicationStartedEvent event) {
-        AlipayProperties.loadProperties();
-    }
+  @Override
+  public void onApplicationEvent(ApplicationStartedEvent event) {
+    AlipayProperties.loadProperties();
+  }
 }

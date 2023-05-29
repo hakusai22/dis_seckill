@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * 验证码图片及计算结果
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class VerifyCodeVo implements Serializable {
     /**

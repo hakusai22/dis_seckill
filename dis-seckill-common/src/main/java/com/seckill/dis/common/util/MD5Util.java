@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * MD5工具类
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class MD5Util {
     /**

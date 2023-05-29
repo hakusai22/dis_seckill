@@ -5,7 +5,7 @@ import com.seckill.dis.common.result.CodeMsg;
 /**
  * 全局异常处理器
  *
- * @author xizizzz
+ * @author hakusai
  */
 public class GlobalException extends RuntimeException {
 

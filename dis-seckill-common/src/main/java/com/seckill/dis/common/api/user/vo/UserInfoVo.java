@@ -11,7 +11,7 @@ import java.io.Serializable;
  * <p>
  * 注：因为需要通过网络传输此model，所以需要序列化
  *
- * @author xizizzz
+ * @author hakusai
  */
 
 @Data

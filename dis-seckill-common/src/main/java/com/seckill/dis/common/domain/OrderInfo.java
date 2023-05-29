@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * order_info 订单信息
- * @author xizizzz
+ * @author hakusai
  */
 @Data
 @AllArgsConstructor
