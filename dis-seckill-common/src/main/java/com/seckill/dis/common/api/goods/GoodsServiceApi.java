@@ -1,13 +1,14 @@
 package com.seckill.dis.common.api.goods;
 
-import com.seckill.dis.common.api.goods.vo.GoodsVo;
-import com.seckill.dis.common.api.goods.vo.InsertGoodsDTO;
-
 import java.text.ParseException;
 import java.util.List;
 
+import com.seckill.dis.common.api.goods.vo.GoodsVo;
+import com.seckill.dis.common.api.goods.vo.InsertGoodsDTO;
+
 /**
  * 商品服务接口
+ *
  * @author hakusai
  */
 public interface GoodsServiceApi {
@@ -29,18 +30,21 @@ public interface GoodsServiceApi {
 
     /**
      * order表减库存
+     *
      * @param goodsId
      */
     void reduceStock(long goodsId);
 
     /**
      * g
+     *
      * @param goodsId
      */
     void deleteGoods(long goodsId);
 
     /**
      * 删除商品
+     *
      * @param goodsId
      */
     void updateGoods(long goodsId);

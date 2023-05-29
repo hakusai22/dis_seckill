@@ -1,13 +1,12 @@
 package com.seckill.dis.common.util;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * HttpServletRequest
- *
  */
 public class HttpContextUtils {
 

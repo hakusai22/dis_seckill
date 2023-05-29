@@ -1,5 +1,9 @@
 package com.seckill.dis.common.api.user;
 
+import java.text.ParseException;
+import java.util.List;
+import javax.validation.Valid;
+
 import com.seckill.dis.common.api.user.vo.LoginVo;
 import com.seckill.dis.common.api.user.vo.RegisterVo;
 import com.seckill.dis.common.api.user.vo.UserInfoVo;
@@ -7,13 +11,9 @@ import com.seckill.dis.common.api.user.vo.UserVo;
 import com.seckill.dis.common.domain.SeckillUser;
 import com.seckill.dis.common.result.CodeMsg;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.text.ParseException;
-import java.util.List;
-
 /**
  * 用户服务接口
+ *
  * @author hakusai
  */
 public interface UserServiceApi {
@@ -28,18 +28,21 @@ public interface UserServiceApi {
 
     /**
      * 注册
+     *
      * @param userModel
      */
     CodeMsg register(RegisterVo userModel);
 
     /**
      * 检查用户名是否存在
+     *
      * @param username
      */
     boolean checkUsername(String username);
 
     /**
      * 获取用户信息
+     *
      * @param uuid
      */
     UserInfoVo getUserInfo(int uuid);
@@ -52,24 +55,28 @@ public interface UserServiceApi {
 
     /**
      * 更新用户信息
+     *
      * @param userInfoVo
      */
     UserInfoVo updateUserInfo(UserInfoVo userInfoVo);
 
     /**
      * 用户登录
+     *
      * @param loginVo
      */
     String login(@Valid LoginVo loginVo);
 
     /**
      * 管理员登录
+     *
      * @param loginVo
      */
     String adminLogin(@Valid LoginVo loginVo);
 
     /**
      * 根据phone获取用户
+     *
      * @param phone
      */
     UserVo getUserByPhone(long phone);

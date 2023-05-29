@@ -1,10 +1,10 @@
 package com.seckill.dis.common.api.user.vo;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * 用户信息
@@ -32,6 +32,5 @@ public class UserInfoVo implements Serializable {
     private String headAddress;
     private long beginTime; // 创建时间
     private long updateTime;// 更新时间
-
 
 }

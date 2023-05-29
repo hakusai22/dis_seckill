@@ -35,7 +35,7 @@ public class MD5Util {
      * @param inputPassword 用户输入的密码
      * @return Calculates the MD5 digest and returns the value as a 32 character hex string.
      */
-    public static String  inputPassToFormPass(String inputPassword) {
+    public static String inputPassToFormPass(String inputPassword) {
         // 加盐规则（自定义）
         String str = "" + SALT.charAt(0) + SALT.charAt(2) + inputPassword + SALT.charAt(5) + SALT.charAt(4);
         return md5(str);
@@ -60,7 +60,8 @@ public class MD5Util {
      * @param saltDb        数据库中用户的salt
      * @return
      */
-    public static String inputPassToDbPass(String inputPassword, String saltDb) {
+    public static String inputPassToDbPass(String inputPassword,
+        String saltDb) {
         String formPass = inputPassToFormPass(inputPassword);
         String dbPass = formPassToDbPass(formPass, saltDb);
         return dbPass;

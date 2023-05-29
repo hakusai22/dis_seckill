@@ -1,11 +1,11 @@
 package com.seckill.dis.common.api.mq.vo;
 
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 /**
  * 在MQ中传递的秒杀信息
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class SkMessage implements Serializable{
+public class SkMessage implements Serializable {
 
     private long userID;
     private long goodsId;

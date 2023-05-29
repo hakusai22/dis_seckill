@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * goods 表
+ *
  * @author hakusai
  */
 @Data
@@ -15,27 +16,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Goods {
 
-    private Long id;
+  private Long id;
 
-    private String goodsName;
+  private String goodsName;
 
-    private String goodsTitle;
+  private String goodsTitle;
 
-    private String goodsImg;
+  private String goodsImg;
 
-    private String goodsDetail;
+  private String goodsDetail;
 
-    private Double goodsPrice;
+  private Double goodsPrice;
 
-    private Long goodsStock;
+  private Long goodsStock;
 
-    @JsonSerialize(using = ToStringSerializer.class)
-    public Long getId() {
-        return id;
-    }
+  @JsonSerialize(using = ToStringSerializer.class)
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
 }

@@ -1,23 +1,24 @@
 package com.seckill.dis.common.api.user.vo;
 
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+
 import com.seckill.dis.common.validator.IsMobile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-
 /**
  * 用于接收客户端请求中的表单数据
  * 使用JSR303完成参数校验
+ *
  * @author hakusai
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginVo implements Serializable{
+public class LoginVo implements Serializable {
 
     /**
      * 通过注解的方式校验手机号（JSR303）
