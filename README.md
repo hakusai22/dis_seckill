@@ -34,14 +34,12 @@
 ### 添加秒杀商品
 ![添加秒杀商品](imagesimage7.png)
 
-![](../../Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/7d8fd9261f9f6bb083a7c5640b0f0ca9/Message/MessageTemp/c521dc710728e6ef713e4618910b20a9/Image/41650204744_.pic.jpg)
+![添加秒杀商品](img.png)
 
-![](../../Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/7d8fd9261f9f6bb083a7c5640b0f0ca9/Message/MessageTemp/c521dc710728e6ef713e4618910b20a9/Image/61650204766_.pic.jpg)
+![添加秒杀商品](img_1.png)
 
-![](../../Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/7d8fd9261f9f6bb083a7c5640b0f0ca9/Message/MessageTemp/5ad804fb45dff59a48be49703b102175/Image/2091650204783_.pic.jpg)
+![添加秒杀商品](img_2.png)
 
-![](../../Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/7d8fd9261f9f6bb083a7c5640b0f0ca9/Message/MessageTemp/5ad804fb45dff59a48be49703b102175/Image/2101650204797_.pic.jpg)
+![添加秒杀商品](img_3.png)
 
-![](../../Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/7d8fd9261f9f6bb083a7c5640b0f0ca9/Message/MessageTemp/c521dc710728e6ef713e4618910b20a9/Image/81650204815_.pic.jpg)
-
-
+![添加秒杀商品](img_4.png)
