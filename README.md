@@ -20,7 +20,7 @@
     <a href="https://github.com/hakusai22/dis_seckill/">
     <img src="https://fastly.jsdelivr.net/gh/hakusai22/image/qq.jpg" alt="Logo" width="200" height="200">
     </a>
-    <h3 align="center">字节青训营抖音项目</h3>
+    <h3 align="center">商品秒杀</h3>
   <p align="center">
     ·
     <a href="https://github.com/hakusai22/dis_seckill/issues">报告Bug</a>
