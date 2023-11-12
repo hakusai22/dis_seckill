@@ -1,6 +1,8 @@
 package com.seckill.dis.gateway.aop_log;
 
-import com.alibaba.fastjson.JSON;
+import java.lang.reflect.Method;
+import javax.servlet.http.HttpServletRequest;
+
 import com.seckill.dis.common.util.HttpContextUtils;
 import com.seckill.dis.common.util.IpUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +12,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
 
 /**
  * @author hakusai

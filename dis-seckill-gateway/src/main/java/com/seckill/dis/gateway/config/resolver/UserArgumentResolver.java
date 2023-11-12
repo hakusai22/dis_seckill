@@ -1,11 +1,7 @@
 package com.seckill.dis.gateway.config.resolver;
 
-import com.seckill.dis.common.api.cache.RedisServiceApi;
-import com.seckill.dis.common.api.cache.vo.SkUserKeyPrefix;
-import com.seckill.dis.common.api.user.UserServiceApi;
 import com.seckill.dis.common.api.user.vo.UserVo;
 import com.seckill.dis.gateway.config.access.UserContext;
-
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

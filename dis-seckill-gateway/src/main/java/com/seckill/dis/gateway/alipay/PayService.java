@@ -5,7 +5,7 @@ import com.alipay.api.AlipayApiException;
 /**
  * 支付服务
  *
- * @author Louis
+ * @author hakusai22
  * @date Dec 12, 2018
  */
 public interface PayService {

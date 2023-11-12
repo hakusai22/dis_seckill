@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.AlipayTradePagePayModel;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.seckill.dis.common.api.order.OrderServiceApi;
 import org.apache.dubbo.config.annotation.Reference;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
 /**
  * 支付宝支付接口
  *
- * @author Louis
+ * @author hakusai22
  * @date Dec 12, 2018
  */
 @Component

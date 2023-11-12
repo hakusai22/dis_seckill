@@ -1,18 +1,18 @@
 package com.seckill.dis.gateway.alipay;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 /**
  * 应用启动加载文件
  *
- * @author Louis
+ * @author hakusai22
  * @date Dec 12, 2018
  */
 @Component
