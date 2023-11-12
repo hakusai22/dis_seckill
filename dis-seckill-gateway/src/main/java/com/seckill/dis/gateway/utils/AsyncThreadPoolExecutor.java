@@ -1,15 +1,15 @@
 package com.seckill.dis.gateway.utils;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
-
 /**
- * @description: ybase自定义线程池-公用
+ * @description: 自定义线程池-公用
  */
 @Configuration
 @EnableAsync

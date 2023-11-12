@@ -1,5 +1,12 @@
 package com.seckill.dis.gateway.utils;
 
+
+/**
+ * Copyright (c) 2023
+ * All rights reserved
+ * Author: hakusai22@qq.com
+ */
+
 public class SnowflakeIdGenerator {
   private static final long startTime = 1532016000000L;
   private static final long workerIdBits = 10L;

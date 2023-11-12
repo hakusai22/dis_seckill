@@ -1,5 +1,17 @@
 package com.seckill.dis.gateway.utils;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -11,17 +23,20 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import redis.clients.jedis.*;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.JedisCommands;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 import redis.clients.util.JedisClusterCRC16;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
 /**
- * redis cache 工具类
+ * Copyright (c) 2023
+ * All rights reserved
+ * Author: hakusai22@qq.com
  */
+
 @Slf4j
 @Component("redis")
 public class RedisUtil extends AbstractDistributedLock {

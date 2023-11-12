@@ -1,9 +1,13 @@
 package com.seckill.dis.gateway.user;
 
-import com.seckill.dis.common.api.cache.vo.GoodsKeyPrefix;
+import java.text.ParseException;
+import java.util.List;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import com.seckill.dis.common.api.cache.vo.SkUserKeyPrefix;
-import com.seckill.dis.common.api.goods.vo.GoodsVo;
-import com.seckill.dis.common.api.seckill.SeckillServiceApi;
 import com.seckill.dis.common.api.user.UserServiceApi;
 import com.seckill.dis.common.api.user.vo.LoginVo;
 import com.seckill.dis.common.api.user.vo.RegisterVo;
@@ -11,32 +15,28 @@ import com.seckill.dis.common.api.user.vo.UserVo;
 import com.seckill.dis.common.domain.SeckillUser;
 import com.seckill.dis.common.result.CodeMsg;
 import com.seckill.dis.common.result.Result;
-import com.seckill.dis.common.util.MD5Util;
 import com.seckill.dis.gateway.aop_log.LogAnnotation;
 import com.seckill.dis.gateway.exception.GlobalException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.text.ParseException;
-import java.util.List;
-
 /**
- * 用户接口
- *
- * @author hakusai
+ * Copyright (c) 2023
+ * All rights reserved
+ * Author: hakusai22@qq.com
  */
+
 @Controller
 @RequestMapping("/user/")
 public class UserController {

@@ -1,5 +1,11 @@
 package com.seckill.dis.gateway.utils;
 
+/**
+ * Copyright (c) 2023
+ * All rights reserved
+ * Author: hakusai22@qq.com
+ */
+
 public class Pair<X, Y> {
   private final X x;
   private final Y y;
